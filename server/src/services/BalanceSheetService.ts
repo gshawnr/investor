@@ -1,0 +1,58 @@
+import BalanceSheet from "../models/BalanceSheet";
+import { IBalanceSheet } from "../types/IBalanceSheet"; // You might need to move your interface here
+
+class BalanceSheetService {
+  async createBalanceSheet(data: Partial<IBalanceSheet>) {
+    const ticker_year = `${data.ticker?.toLowerCase()}_${data.fiscalYear}`;
+
+    const existing = await BalanceSheet.findOne({ ticker_year });
+    if (existing) {
+      throw new Error(`BalanceSheet for ${ticker_year} already exists.`);
+    }
+
+    const balanceSheet = new BalanceSheet({
+      ticker: data.ticker?.toLowerCase(),
+      fiscalYear: data.fiscalYear,
+      ticker_year,
+      raw: data.raw,
+    });
+
+    return balanceSheet.save();
+  }
+
+  async getBalanceSheets() {
+    return BalanceSheet.findOne({});
+  }
+
+  async getBalanceSheetByTickerYear(ticker: string, fiscalYear: string) {
+    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear}`;
+    return BalanceSheet.findOne({ ticker_year });
+  }
+
+  async getBalanceSheetsByTicker(ticker: string) {
+    const formattedTicker = ticker.toLowerCase();
+    return BalanceSheet.find({ ticker: formattedTicker }).sort({
+      fiscalYear: -1,
+    });
+  }
+
+  async updateBalanceSheet(
+    ticker: string,
+    fiscalYear: string,
+    updates: Partial<IBalanceSheet>
+  ) {
+    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear}`;
+    return BalanceSheet.findOneAndUpdate(
+      { ticker_year },
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+  }
+
+  async deleteBalanceSheet(ticker: string, fiscalYear: string) {
+    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear}`;
+    return BalanceSheet.findOneAndDelete({ ticker_year });
+  }
+}
+
+export default new BalanceSheetService();
