@@ -1,0 +1,40 @@
+
+# CLIENT
+# dependencies
+/client/node_modules/
+
+# testing
+/client/coverage/
+
+# production
+/client/build/
+
+# misc
+client/.DS_Store
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
+
+/client/npm-debug.log*
+
+# SERVER
+
+/server/node_modules/
+/server/dist/
+/server/*.tsbuildinfo
+
+# server environment files
+/server/.env
+/server/.env.local
+/server/.env.development.local
+/server/.env.test.local
+/server/.env.production.local
+
+# server logs
+/server/npm-debug.log*
+/server/yarn-debug.log*
+/server/yarn-error.log*
+
+# macOS metadata
+/server/.DS_Store
