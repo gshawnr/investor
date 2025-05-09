@@ -6,4 +6,6 @@ export interface IBalanceSheet extends Document {
   fiscalYear: string; // Format: 'yyyy-mm-dd'
   ticker_year: string; // Concatenation of ticker symbol and fiscal year
   raw: object; // Original statement object
+  createdAt?: Date;
+  updatedAt?: Date;
 }

@@ -9,27 +9,30 @@ interface IBalanceSheet extends Document {
 }
 
 // Schema for the balance sheet
-const balanceSheetSchema: Schema = new Schema({
-  ticker: {
-    type: String,
-    required: true,
-    lowercase: true,
+const balanceSheetSchema: Schema = new Schema(
+  {
+    ticker: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
+    fiscalYear: {
+      type: String,
+      required: true,
+      match: /^\d{4}-\d{2}-\d{2}$/, // Validates the 'yyyy-mm-dd' format
+    },
+    ticker_year: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    raw: {
+      type: Object,
+      required: true,
+    },
   },
-  fiscalYear: {
-    type: String,
-    required: true,
-    match: /^\d{4}-\d{2}-\d{2}$/, // Validates the 'yyyy-mm-dd' format
-  },
-  ticker_year: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  raw: {
-    type: Object,
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 // Model definition
 const BalanceSheet = mongoose.model<IBalanceSheet>(

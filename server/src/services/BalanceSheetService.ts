@@ -3,7 +3,10 @@ import { IBalanceSheet } from "../types/IBalanceSheet"; // You might need to mov
 
 class BalanceSheetService {
   async createBalanceSheet(data: Partial<IBalanceSheet>) {
-    const ticker_year = `${data.ticker?.toLowerCase()}_${data.fiscalYear}`;
+    const ticker_year = `${data.ticker?.toLowerCase()}_${data.fiscalYear?.slice(
+      0,
+      4
+    )}`;
 
     const existing = await BalanceSheet.findOne({ ticker_year });
     if (existing) {
@@ -24,8 +27,8 @@ class BalanceSheetService {
     return BalanceSheet.findOne({});
   }
 
-  async getBalanceSheetByTickerYear(ticker: string, fiscalYear: string) {
-    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear}`;
+  async getBalanceSheetByTickerYear(ticker: string, year: string) {
+    const ticker_year = `${ticker.toLowerCase()}_${year}`;
     return BalanceSheet.findOne({ ticker_year });
   }
 
@@ -41,7 +44,7 @@ class BalanceSheetService {
     fiscalYear: string,
     updates: Partial<IBalanceSheet>
   ) {
-    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear}`;
+    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear.slice(0, 4)}`;
     return BalanceSheet.findOneAndUpdate(
       { ticker_year },
       { $set: updates },
@@ -49,8 +52,8 @@ class BalanceSheetService {
     );
   }
 
-  async deleteBalanceSheet(ticker: string, fiscalYear: string) {
-    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear}`;
+  async deleteBalanceSheet(ticker: string, year: string) {
+    const ticker_year = `${ticker.toLowerCase()}_${year}`;
     return BalanceSheet.findOneAndDelete({ ticker_year });
   }
 }
