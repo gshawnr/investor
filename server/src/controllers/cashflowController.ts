@@ -1,24 +1,20 @@
 import { Request, Response, NextFunction } from "express";
-import BalanceSheetService from "../services/BalanceSheetService";
+import CashFlowService from "../services/CashflowService";
 
-const createBalanceSheet = async (
+const createCashFlow = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const result = await BalanceSheetService.createBalanceSheet(req.body);
+    const result = await CashFlowService.createCashFlow(req.body);
     res.status(201).json(result);
   } catch (err) {
     next(err);
   }
 };
 
-const getBalanceSheet = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getCashFlow = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { ticker } = req.params;
     const { year } = req.query;
@@ -30,21 +26,19 @@ const getBalanceSheet = async (
         return;
       }
 
-      const result = await BalanceSheetService.getBalanceSheetByTickerYear(
+      const result = await CashFlowService.getCashFlowByTickerYear(
         ticker,
         year as string
       );
 
       if (!result) {
-        res.status(404).json({ message: "balance sheet not found" });
+        res.status(404).json({ message: "cashflow not found" });
         return;
       }
       res.json(result);
       return;
     } else {
-      const results = await BalanceSheetService.getBalanceSheetsByTicker(
-        ticker
-      );
+      const results = await CashFlowService.getCashFlowsByTicker(ticker);
       res.status(200).json(results);
       return;
     }
@@ -53,7 +47,7 @@ const getBalanceSheet = async (
   }
 };
 
-const updateBalanceSheet = async (
+const updateCashFlow = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -64,13 +58,13 @@ const updateBalanceSheet = async (
     if (updateData._id) {
       delete updateData._id;
     }
-    const result = await BalanceSheetService.updateBalanceSheet(
+    const result = await CashFlowService.updateCashFlow(
       ticker,
       fiscalYear,
       updateData
     );
     if (!result) {
-      res.status(404).json({ message: "BalanceSheet not found" });
+      res.status(404).json({ message: "CashFlow not found" });
       return;
     }
     res.json(result);
@@ -79,19 +73,16 @@ const updateBalanceSheet = async (
   }
 };
 
-const deleteBalanceSheet = async (
+const deleteCashFlow = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { ticker, fiscalYear } = req.params;
-    const result = await BalanceSheetService.deleteBalanceSheet(
-      ticker,
-      fiscalYear
-    );
+    const result = await CashFlowService.deleteCashFlow(ticker, fiscalYear);
     if (!result) {
-      res.status(404).json({ message: "BalanceSheet not found" });
+      res.status(404).json({ message: "CashFlow not found" });
       return;
     }
     res.status(204).send();
@@ -101,8 +92,8 @@ const deleteBalanceSheet = async (
 };
 
 export default {
-  createBalanceSheet,
-  getBalanceSheet,
-  updateBalanceSheet,
-  deleteBalanceSheet,
+  createCashFlow,
+  getCashFlow,
+  updateCashFlow,
+  deleteCashFlow,
 };

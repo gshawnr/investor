@@ -1,8 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import { IBalanceSheet } from "../types/IBalanceSheet";
+import { ICashflow } from "../types/ICashflow";
 
-// Schema for the balance sheet
-const balanceSheetSchema: Schema = new Schema(
+const cashflowSchema: Schema = new Schema(
   {
     ticker: {
       type: String,
@@ -27,10 +26,6 @@ const balanceSheetSchema: Schema = new Schema(
   { timestamps: true }
 );
 
-// Model definition
-const BalanceSheet = mongoose.model<IBalanceSheet>(
-  "BalanceSheet",
-  balanceSheetSchema
-);
+const CashFlow = mongoose.model<ICashflow>("Cashflow", cashflowSchema);
 
-export default BalanceSheet;
+export default CashFlow;

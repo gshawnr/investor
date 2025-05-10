@@ -15,10 +15,10 @@ describe("BalanceSheetService", () => {
 
   describe("createBalanceSheet", () => {
     it("should create a balance sheet successfully", async () => {
-      const inputData: Partial<IBalanceSheet> = {
+      const inputData = {
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
-        raw: { assets: 1000 },
+        assets: 1000,
       };
 
       // Mock findOne to return null (no existing record)
@@ -29,7 +29,11 @@ describe("BalanceSheetService", () => {
         ticker: "aapl",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: { assets: 1000 },
+        raw: {
+          ticker: "AAPL",
+          fiscalYear: "2024-12-31",
+          assets: 1000,
+        },
       });
 
       // Mock the constructor so `new BalanceSheet()` returns an object with a `save` method
@@ -45,7 +49,11 @@ describe("BalanceSheetService", () => {
         ticker: "aapl",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: { assets: 1000 },
+        raw: {
+          ticker: "AAPL",
+          fiscalYear: "2024-12-31",
+          assets: 1000,
+        },
       });
 
       // Check save was called
@@ -56,7 +64,11 @@ describe("BalanceSheetService", () => {
         ticker: "aapl",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: { assets: 1000 },
+        raw: {
+          ticker: "AAPL",
+          fiscalYear: "2024-12-31",
+          assets: 1000,
+        },
       });
     });
 

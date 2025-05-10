@@ -2,11 +2,10 @@ import BalanceSheet from "../models/BalanceSheet";
 import { IBalanceSheet } from "../types/IBalanceSheet"; // You might need to move your interface here
 
 class BalanceSheetService {
-  async createBalanceSheet(data: Partial<IBalanceSheet>) {
-    const ticker_year = `${data.ticker?.toLowerCase()}_${data.fiscalYear?.slice(
-      0,
-      4
-    )}`;
+  async createBalanceSheet(raw: Partial<IBalanceSheet>) {
+    const { ticker, fiscalYear } = raw;
+
+    const ticker_year = `${ticker?.toLowerCase()}_${fiscalYear?.slice(0, 4)}`;
 
     const existing = await BalanceSheet.findOne({ ticker_year });
     if (existing) {
@@ -14,10 +13,10 @@ class BalanceSheetService {
     }
 
     const balanceSheet = new BalanceSheet({
-      ticker: data.ticker?.toLowerCase(),
-      fiscalYear: data.fiscalYear,
+      ticker: ticker?.toLowerCase(),
+      fiscalYear: fiscalYear,
       ticker_year,
-      raw: data.raw,
+      raw: raw,
     });
 
     return balanceSheet.save();

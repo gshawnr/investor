@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import BalanceSheet from "../../../models/BalanceSheet";
-import { IBalanceSheet } from "../../../types/IBalanceSheet";
+import CashFlow from "../../../models/Cashflow";
+import { ICashflow } from "../../../types/ICashflow";
 
 let mongoServer: MongoMemoryServer;
 
@@ -17,47 +17,46 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-  await BalanceSheet.deleteMany({});
+  await CashFlow.deleteMany({});
 });
 
-describe("BalanceSheet Model", () => {
-  it("should save a valid balance sheet document", async () => {
+describe("CashFlow Model", () => {
+  it("should save a valid cashflow document", async () => {
     const validData = {
-      ticker: "aapl",
+      ticker: "msft",
       fiscalYear: "2024-12-31",
-      ticker_year: "aapl_2024",
+      ticker_year: "msft_2024",
       raw: {
-        ticker: "AAPL",
+        ticker: "MSFT",
         fiscalYear: "2024-12-31",
-        assets: 1000,
+        cashFromOperations: 5000,
       },
     };
 
-    const doc = new BalanceSheet(validData);
+    const doc = new CashFlow(validData);
     const savedDoc = await doc.save();
 
     expect(savedDoc._id).toBeDefined();
-    expect(savedDoc.ticker).toBe("aapl"); // lowercase conversion
+    expect(savedDoc.ticker).toBe("msft"); // lowercase conversion
     expect(savedDoc.fiscalYear).toBe(validData.fiscalYear);
     expect(savedDoc.ticker_year).toBe(validData.ticker_year);
     expect(savedDoc.raw).toEqual(validData.raw);
 
     // Check if timestamps are set and valid
-    expect((savedDoc as IBalanceSheet).createdAt).toBeDefined();
-    expect((savedDoc as IBalanceSheet).updatedAt).toBeDefined();
+    expect((savedDoc as ICashflow).createdAt).toBeDefined();
+    expect((savedDoc as ICashflow).updatedAt).toBeDefined();
 
-    // Ensure createdAt and updatedAt are set correctly
-    const castDoc = savedDoc as IBalanceSheet;
+    const castDoc = savedDoc as ICashflow;
     if (castDoc.createdAt && castDoc.updatedAt) {
       expect(new Date(castDoc.createdAt).getTime()).toBeCloseTo(
         new Date(castDoc.updatedAt).getTime(),
-        -1000
-      ); // within 1 second difference
+        -1000 // within ~1 second difference
+      );
     }
   });
 
   it("should throw validation error if required fields are missing", async () => {
-    const invalidData = new BalanceSheet({});
+    const invalidData = new CashFlow({});
 
     let err: mongoose.Error.ValidationError | null = null;
     try {
@@ -74,15 +73,11 @@ describe("BalanceSheet Model", () => {
   });
 
   it("should fail if fiscalYear format is invalid", async () => {
-    const invalidData = new BalanceSheet({
-      ticker: "aapl",
+    const invalidData = new CashFlow({
+      ticker: "MSFT",
       fiscalYear: "2024/12/31", // wrong format
-      ticker_year: "aapl_2024",
-      raw: {
-        ticker: "AAPL",
-        fiscalYear: "2024-12-31", // wrong format
-        assets: 1000,
-      },
+      ticker_year: "MSFT_2024",
+      raw: { cashFromOperations: 5000 },
     });
 
     let err: mongoose.Error.ValidationError | null = null;
@@ -98,21 +93,21 @@ describe("BalanceSheet Model", () => {
 
   it("should enforce unique constraint on ticker_year", async () => {
     const data = {
-      ticker: "aapl",
+      ticker: "msft",
       fiscalYear: "2024-12-31",
-      ticker_year: "aapl_2024",
+      ticker_year: "MSFT_2024",
       raw: {
-        ticker: "AAPL",
+        ticker: "MSFT",
         fiscalYear: "2024-12-31",
-        assets: 1000,
+        cashFromOperations: 5000,
       },
     };
 
-    await new BalanceSheet(data).save();
+    await new CashFlow(data).save();
 
     let err: mongoose.Error | null = null;
     try {
-      await new BalanceSheet(data).save();
+      await new CashFlow(data).save();
     } catch (error) {
       err = error as mongoose.Error;
     }
