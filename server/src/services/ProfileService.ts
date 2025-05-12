@@ -15,7 +15,7 @@ class ProfileService {
     }
 
     const profile = new Profile({
-      ticker: ticker.toLowerCase(),
+      ticker,
       companyName,
       exchange,
       beta,

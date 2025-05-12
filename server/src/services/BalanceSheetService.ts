@@ -13,7 +13,7 @@ class BalanceSheetService {
     }
 
     const balanceSheet = new BalanceSheet({
-      ticker: ticker?.toLowerCase(),
+      ticker,
       fiscalYear: fiscalYear,
       ticker_year,
       raw: raw,
