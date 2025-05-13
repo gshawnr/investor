@@ -23,6 +23,8 @@ client/.DS_Store
 /server/node_modules/
 /server/dist/
 /server/*.tsbuildinfo
+/server/.jest/
+/server/coverage/
 
 # server environment files
 /server/.env

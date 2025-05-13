@@ -1,8 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import { IBalanceSheet } from "../types/IBalanceSheet";
+import { IIncome } from "../types/IIncome";
 
-// Schema for the balance sheet
-const balanceSheetSchema: Schema = new Schema(
+const incomeSchema = new Schema(
   {
     ticker: {
       type: String,
@@ -19,18 +18,11 @@ const balanceSheetSchema: Schema = new Schema(
       required: true,
       unique: true,
     },
-    raw: {
-      type: Object,
-      required: true,
-    },
+    raw: { type: Object, required: true },
   },
   { timestamps: true }
 );
 
-// Model definition
-const BalanceSheet = mongoose.model<IBalanceSheet>(
-  "BalanceSheet",
-  balanceSheetSchema
-);
+const Income = mongoose.model<IIncome>("Income", incomeSchema);
 
-export default BalanceSheet;
+export default Income;
