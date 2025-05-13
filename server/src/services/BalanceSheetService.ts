@@ -40,10 +40,10 @@ class BalanceSheetService {
 
   async updateBalanceSheet(
     ticker: string,
-    fiscalYear: string,
+    year: string,
     updates: Partial<IBalanceSheet>
   ) {
-    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear.slice(0, 4)}`;
+    const ticker_year = `${ticker.toLowerCase()}_${year}`;
     return BalanceSheet.findOneAndUpdate(
       { ticker_year },
       { $set: updates },

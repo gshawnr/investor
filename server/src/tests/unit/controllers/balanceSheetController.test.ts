@@ -124,7 +124,7 @@ describe("BalanceSheetController", () => {
   describe("updateBalanceSheet", () => {
     it("should update and return the updated sheet", async () => {
       const req = {
-        params: { ticker: "AAPL", fiscalYear: "2024" },
+        params: { ticker: "AAPL", year: "2024" },
         body: { assets: 2000, _id: "shouldBeRemoved" },
       } as unknown as Request;
 
@@ -149,7 +149,7 @@ describe("BalanceSheetController", () => {
 
     it("should return 404 if not found", async () => {
       const req = {
-        params: { ticker: "AAPL", fiscalYear: "2024" },
+        params: { ticker: "AAPL", year: "2024" },
         body: { assets: 2000 },
       } as unknown as Request;
 
@@ -169,7 +169,7 @@ describe("BalanceSheetController", () => {
   describe("deleteBalanceSheet", () => {
     it("should delete and return 204", async () => {
       const req = {
-        params: { ticker: "AAPL", fiscalYear: "2023" },
+        params: { ticker: "AAPL", year: "2023" },
       } as unknown as Request;
 
       const deletedResult = { id: "1" };
@@ -189,7 +189,7 @@ describe("BalanceSheetController", () => {
 
     it("should return 404 if not found", async () => {
       const req = {
-        params: { ticker: "AAPL", fiscalYear: "2023" },
+        params: { ticker: "AAPL", year: "2023" },
       } as unknown as Request;
 
       (BalanceSheetService.deleteBalanceSheet as jest.Mock).mockResolvedValue(

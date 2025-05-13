@@ -100,7 +100,7 @@ describe("CashFlowController", () => {
   describe("updateCashFlow", () => {
     it("should update and return updated result", async () => {
       const mockUpdated = { ticker: "aapl", year: "2024", cash: 9999 };
-      mockReq.params = { ticker: "AAPL", fiscalYear: "2024" };
+      mockReq.params = { ticker: "AAPL", year: "2024" };
       mockReq.body = { _id: "123", cash: 9999 };
       (CashFlowService.updateCashFlow as jest.Mock).mockResolvedValue(
         mockUpdated
@@ -112,7 +112,7 @@ describe("CashFlowController", () => {
     });
 
     it("should return 404 if nothing is updated", async () => {
-      mockReq.params = { ticker: "AAPL", fiscalYear: "2024" };
+      mockReq.params = { ticker: "AAPL", year: "2024" };
       mockReq.body = { _id: "123", cash: 9999 };
       (CashFlowService.updateCashFlow as jest.Mock).mockResolvedValue(null);
 

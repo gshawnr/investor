@@ -10,12 +10,9 @@ router.post("/", BalanceSheetController.createBalanceSheet);
 router.get("/:ticker", BalanceSheetController.getBalanceSheet);
 
 // UPDATE
-router.put("/:ticker/:fiscalYear", BalanceSheetController.updateBalanceSheet);
+router.put("/:ticker/:year", BalanceSheetController.updateBalanceSheet);
 
 // DELETE
-router.delete(
-  "/:ticker/:fiscalYear",
-  BalanceSheetController.deleteBalanceSheet
-);
+router.delete("/:ticker/:year", BalanceSheetController.deleteBalanceSheet);
 
 export default router;

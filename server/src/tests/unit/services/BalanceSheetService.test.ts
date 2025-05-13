@@ -162,12 +162,12 @@ describe("BalanceSheetService", () => {
 
     it("should update and return the updated balance sheet", async () => {
       const ticker = "AAPL";
-      const fiscalYear = "2024-12-31";
+      const year = "2024";
       const updates = { raw: { assets: 2000 } };
 
       const mockUpdated = {
         ticker: "aapl",
-        fiscalYear,
+        year,
         raw: { assets: 2000 },
       };
 
@@ -175,7 +175,7 @@ describe("BalanceSheetService", () => {
 
       const res = await BalanceSheetService.updateBalanceSheet(
         ticker,
-        fiscalYear,
+        year,
         updates
       );
 

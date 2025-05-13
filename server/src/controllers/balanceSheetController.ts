@@ -59,14 +59,21 @@ const updateBalanceSheet = async (
   next: NextFunction
 ) => {
   try {
-    const { ticker, fiscalYear } = req.params;
+    const { ticker, year } = req.params;
+
+    const isValidYear = /^\d{4}$/.test(year as string);
+    if (!isValidYear) {
+      res.status(400).json({ message: "invalid year format" });
+      return;
+    }
+
     const updateData = { ...req.body };
     if (updateData._id) {
       delete updateData._id;
     }
     const result = await BalanceSheetService.updateBalanceSheet(
       ticker,
-      fiscalYear,
+      year,
       updateData
     );
     if (!result) {
@@ -85,11 +92,15 @@ const deleteBalanceSheet = async (
   next: NextFunction
 ) => {
   try {
-    const { ticker, fiscalYear } = req.params;
-    const result = await BalanceSheetService.deleteBalanceSheet(
-      ticker,
-      fiscalYear
-    );
+    const { ticker, year } = req.params;
+
+    const isValidYear = /^\d{4}$/.test(year as string);
+    if (!isValidYear) {
+      res.status(400).json({ message: "invalid year format" });
+      return;
+    }
+
+    const result = await BalanceSheetService.deleteBalanceSheet(ticker, year);
     if (!result) {
       res.status(404).json({ message: "BalanceSheet not found" });
       return;

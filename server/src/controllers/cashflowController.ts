@@ -53,18 +53,24 @@ const updateCashFlow = async (
   next: NextFunction
 ) => {
   try {
-    const { ticker, fiscalYear } = req.params;
+    const { ticker, year } = req.params;
     const updateData = { ...req.body };
     if (updateData._id) {
       delete updateData._id;
     }
 
-    const year = fiscalYear.trim().slice(0, 4);
+    const isValidYear = /^\d{4}$/.test(year as string);
+    if (!isValidYear) {
+      res.status(400).json({ message: "invalid year format" });
+      return;
+    }
+
     const result = await CashFlowService.updateCashFlow(
       ticker,
       year,
       updateData
     );
+
     if (!result) {
       res.status(404).json({ message: "cashflow not found" });
       return;
