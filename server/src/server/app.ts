@@ -7,6 +7,8 @@ import incomeRoutes from "../routes/incomeRoutes";
 import { errorHandler } from "../middleware/errorHandler";
 import { AppError } from "../utils/AppError";
 
+import { getBalanceSheets } from "../apis/finApiService";
+
 const app = express();
 
 // middleware
