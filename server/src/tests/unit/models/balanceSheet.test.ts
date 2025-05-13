@@ -23,7 +23,7 @@ afterEach(async () => {
 describe("BalanceSheet Model", () => {
   it("should save a valid balance sheet document", async () => {
     const validData = {
-      ticker: "aapl",
+      ticker: "AAPL",
       fiscalYear: "2024-12-31",
       ticker_year: "aapl_2024",
       raw: {

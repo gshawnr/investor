@@ -46,7 +46,7 @@ describe("BalanceSheetService", () => {
 
       // Check constructor was called with the transformed data
       expect(mockBalanceSheet).toHaveBeenCalledWith({
-        ticker: "aapl",
+        ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
         raw: {

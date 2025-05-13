@@ -23,7 +23,7 @@ afterEach(async () => {
 describe("CashFlow Model", () => {
   it("should save a valid cashflow document", async () => {
     const validData = {
-      ticker: "msft",
+      ticker: "MSFT",
       fiscalYear: "2024-12-31",
       ticker_year: "msft_2024",
       raw: {
