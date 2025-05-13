@@ -10,9 +10,9 @@ router.post("/", cashflowController.createCashFlow);
 router.get("/:ticker", cashflowController.getCashFlow);
 
 // UPDATE
-router.put("/:ticker/:fiscalYear", cashflowController.updateCashFlow);
+router.put("/:ticker/:year", cashflowController.updateCashFlow);
 
 // DELETE
-router.delete("/:ticker/:fiscalYear", cashflowController.deleteCashFlow);
+router.delete("/:ticker/:year", cashflowController.deleteCashFlow);
 
 export default router;
