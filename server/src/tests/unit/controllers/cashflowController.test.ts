@@ -120,14 +120,14 @@ describe("CashFlowController", () => {
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
-        message: "CashFlow not found",
+        message: "cashflow not found",
       });
     });
   });
 
   describe("deleteCashFlow", () => {
     it("should delete and return 204", async () => {
-      mockReq.params = { ticker: "AAPL", fiscalYear: "2023" };
+      mockReq.params = { ticker: "AAPL", year: "2023" };
       (CashFlowService.deleteCashFlow as jest.Mock).mockResolvedValue({});
 
       await CashFlowController.deleteCashFlow(mockReq, mockRes, mockNext);
@@ -137,7 +137,7 @@ describe("CashFlowController", () => {
     });
 
     it("should return 404 if nothing deleted", async () => {
-      mockReq.params = { ticker: "AAPL", fiscalYear: "2023" };
+      mockReq.params = { ticker: "AAPL", year: "2023" };
       (CashFlowService.deleteCashFlow as jest.Mock).mockResolvedValue(null);
 
       await CashFlowController.deleteCashFlow(mockReq, mockRes, mockNext);

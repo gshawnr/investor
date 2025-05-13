@@ -13,8 +13,8 @@ class CashFlowService {
     }
 
     const cashFlow = new CashFlow({
-      ticker: ticker?.toLowerCase(),
-      fiscalYear: fiscalYear,
+      ticker,
+      fiscalYear,
       ticker_year,
       raw: raw,
     });
@@ -40,10 +40,10 @@ class CashFlowService {
 
   async updateCashFlow(
     ticker: string,
-    fiscalYear: string,
+    year: string,
     updates: Partial<ICashflow>
   ) {
-    const ticker_year = `${ticker.toLowerCase()}_${fiscalYear.slice(0, 4)}`;
+    const ticker_year = `${ticker.toLowerCase()}_${year}`;
     return CashFlow.findOneAndUpdate(
       { ticker_year },
       { $set: updates },

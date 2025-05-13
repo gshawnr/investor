@@ -43,7 +43,7 @@ describe("Cashflow Routes", () => {
     });
   });
 
-  describe("PUT /cashflows/:ticker/:fiscalYear", () => {
+  describe("PUT /cashflows/:ticker/:year", () => {
     it("should call updateCashFlow controller", async () => {
       const res = await request(app)
         .put("/cashflows/AAPL/2024-12-31")
@@ -55,7 +55,7 @@ describe("Cashflow Routes", () => {
     });
   });
 
-  describe("DELETE /cashflows/:ticker/:fiscalYear", () => {
+  describe("DELETE /cashflows/:ticker/:year", () => {
     it("should call deleteCashFlow controller", async () => {
       const res = await request(app).delete("/cashflows/AAPL/2024-12-31");
 

@@ -43,7 +43,7 @@ describe("BalanceSheet Routes", () => {
     });
   });
 
-  describe("PUT /balance-sheets/:ticker/:fiscalYear", () => {
+  describe("PUT /balance-sheets/:ticker/:year", () => {
     it("should call updateBalanceSheet controller", async () => {
       const res = await request(app)
         .put("/balance-sheets/AAPL/2024-12-31")
@@ -55,7 +55,7 @@ describe("BalanceSheet Routes", () => {
     });
   });
 
-  describe("DELETE /balance-sheets/:ticker/:fiscalYear", () => {
+  describe("DELETE /balance-sheets/:ticker/:year", () => {
     it("should call deleteBalanceSheet controller", async () => {
       const res = await request(app).delete("/balance-sheets/AAPL/2024-12-31");
 

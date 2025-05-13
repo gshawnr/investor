@@ -36,7 +36,7 @@ describe("CashflowService", () => {
       const res = await CashflowService.createCashFlow(inputData);
 
       expect(mockCashFlow).toHaveBeenCalledWith({
-        ticker: "aapl",
+        ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
         raw: inputData,
@@ -119,11 +119,7 @@ describe("CashflowService", () => {
 
       mockCashFlow.findOneAndUpdate.mockResolvedValue(mockUpdated);
 
-      const res = await CashflowService.updateCashFlow(
-        "AAPL",
-        "2024-12-31",
-        updates
-      );
+      const res = await CashflowService.updateCashFlow("AAPL", "2024", updates);
 
       expect(mockCashFlow.findOneAndUpdate).toHaveBeenCalledWith(
         { ticker_year: "aapl_2024" },
