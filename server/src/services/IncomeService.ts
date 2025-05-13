@@ -9,7 +9,7 @@ class IncomeService {
 
     const existing = await Income.findOne({ ticker_year });
     if (existing) {
-      throw new Error(`Income for ${ticker_year} alread exists.`);
+      throw new Error(`income for ${ticker_year} alread exists`);
     }
 
     const income = new Income({ ticker, fiscalYear, ticker_year, raw });

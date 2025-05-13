@@ -52,13 +52,12 @@ const updateIncome = async (
   next: NextFunction
 ) => {
   try {
-    const { ticker, fiscalYear } = req.params;
+    const { ticker, year } = req.params;
     const updateData = { ...req.body };
     if (updateData._id) {
       delete updateData._id;
     }
 
-    const year = fiscalYear.trim().slice(0, 4);
     const updated = await IncomeService.updateIncome(ticker, year, updateData);
 
     if (!updated) {
