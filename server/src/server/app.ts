@@ -4,6 +4,7 @@ import balanceSheetRoutes from "../routes/balanceSheetRoutes";
 import cashflowRoutes from "../routes/cashFlowRoutes";
 import profileRoutes from "../routes/profileRoutes";
 import incomeRoutes from "../routes/incomeRoutes";
+import calculationConstantsRoutes from "../routes/calculationContantsRoutes";
 import { errorHandler } from "../middleware/errorHandler";
 import { AppError } from "../utils/AppError";
 
@@ -21,6 +22,7 @@ app.use("/api/balance-sheets", balanceSheetRoutes);
 app.use("/api/cashflows", cashflowRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/incomes", incomeRoutes);
+app.use("/api/calculation-constants", calculationConstantsRoutes);
 
 // Handle undefined routes
 app.use((req, res, next) => {

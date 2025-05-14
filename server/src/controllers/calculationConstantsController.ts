@@ -1,22 +1,28 @@
 import { Request, Response, NextFunction } from "express";
-import CashFlowService from "../services/CashflowService";
+import CalculationConstants from "../services/CalculationConstantsService";
+import CalculationConstantsService from "../services/CalculationConstantsService";
 
-const createCashFlow = async (
+const createCalculationConstants = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const result = await CashFlowService.createCashFlow(req.body);
+    const result = await CalculationConstantsService.createCalculationConstants(
+      req.body
+    );
     res.status(201).json(result);
   } catch (err) {
     next(err);
   }
 };
 
-const getCashFlow = async (req: Request, res: Response, next: NextFunction) => {
+const getCalculationConstants = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { ticker } = req.params;
     const { year } = req.query;
 
     if (year) {
@@ -26,19 +32,18 @@ const getCashFlow = async (req: Request, res: Response, next: NextFunction) => {
         return;
       }
 
-      const result = await CashFlowService.getCashFlowByTickerYear(
-        ticker,
+      const result = await CalculationConstants.getCalculationConstants(
         year as string
       );
 
       if (!result) {
-        res.status(404).json({ message: "cashflow not found" });
+        res.status(404).json({ message: "calculation constants not found" });
         return;
       }
       res.status(200).json(result);
       return;
     } else {
-      const results = await CashFlowService.getCashFlowsByTicker(ticker);
+      const results = await CalculationConstants.getAllCalculationConstants();
       res.status(200).json(results);
       return;
     }
@@ -47,13 +52,13 @@ const getCashFlow = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const updateCashFlow = async (
+const updateCalculationConstants = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { ticker, year } = req.params;
+    const { year } = req.params;
     const updateData = { ...req.body };
     if (updateData._id) {
       delete updateData._id;
@@ -65,29 +70,29 @@ const updateCashFlow = async (
       return;
     }
 
-    const result = await CashFlowService.updateCashFlow(
-      ticker,
+    const result = await CalculationConstants.updateCalculationConstants(
       year,
       updateData
     );
 
     if (!result) {
-      res.status(404).json({ message: "cashflow not found" });
+      res.status(404).json({ message: "calculation constants not found" });
       return;
     }
+
     res.status(200).json(result);
   } catch (err) {
     next(err);
   }
 };
 
-const deleteCashFlow = async (
+const deleteCalculationConstants = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { ticker, year } = req.params;
+    const { year } = req.params;
 
     const isValidYear = /^\d{4}$/.test(year as string);
     if (!isValidYear) {
@@ -95,10 +100,10 @@ const deleteCashFlow = async (
       return;
     }
 
-    const result = await CashFlowService.deleteCashFlow(ticker, year);
+    const result = await CalculationConstants.deleteCalculationConstants(year);
 
     if (!result) {
-      res.status(404).json({ message: "CashFlow not found" });
+      res.status(404).json({ message: "calculation constant not found" });
       return;
     }
 
@@ -109,8 +114,8 @@ const deleteCashFlow = async (
 };
 
 export default {
-  createCashFlow,
-  getCashFlow,
-  updateCashFlow,
-  deleteCashFlow,
+  createCalculationConstants,
+  getCalculationConstants,
+  updateCalculationConstants,
+  deleteCalculationConstants,
 };

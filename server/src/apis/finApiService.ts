@@ -27,7 +27,7 @@ export const getIncomes = async (params: any): Promise<any> => {
 
 export const getCashflows = async (params: any): Promise<any> => {
   const { symbol, period = "annual", limit = "10" } = params;
-  const limitNum = parseInt(limit);
+  const limitNum = parseInt(limit); // TODO may be unnecessary
 
   const fetch = constructFetch("cash-flow-statement", symbol, period, limitNum);
 
