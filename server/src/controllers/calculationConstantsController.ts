@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import CalculationConstants from "../services/CalculationConstantsService";
 import CalculationConstantsService from "../services/CalculationConstantsService";
 
 const createCalculationConstants = async (
@@ -32,7 +31,7 @@ const getCalculationConstants = async (
         return;
       }
 
-      const result = await CalculationConstants.getCalculationConstants(
+      const result = await CalculationConstantsService.getCalculationConstants(
         year as string
       );
 
@@ -43,7 +42,8 @@ const getCalculationConstants = async (
       res.status(200).json(result);
       return;
     } else {
-      const results = await CalculationConstants.getAllCalculationConstants();
+      const results =
+        await CalculationConstantsService.getAllCalculationConstants();
       res.status(200).json(results);
       return;
     }
@@ -70,7 +70,7 @@ const updateCalculationConstants = async (
       return;
     }
 
-    const result = await CalculationConstants.updateCalculationConstants(
+    const result = await CalculationConstantsService.updateCalculationConstants(
       year,
       updateData
     );
@@ -100,7 +100,9 @@ const deleteCalculationConstants = async (
       return;
     }
 
-    const result = await CalculationConstants.deleteCalculationConstants(year);
+    const result = await CalculationConstantsService.deleteCalculationConstants(
+      year
+    );
 
     if (!result) {
       res.status(404).json({ message: "calculation constant not found" });

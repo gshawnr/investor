@@ -102,11 +102,13 @@ describe("Income Model", () => {
       },
     };
 
-    await new Income(data).save();
+    const valid = new Income(data);
+    await valid.save();
 
     let err: mongoose.Error | null = null;
     try {
-      await new Income(data).save();
+      const invalid = new Income(data);
+      await invalid.save();
     } catch (error) {
       err = error as mongoose.Error;
     }
