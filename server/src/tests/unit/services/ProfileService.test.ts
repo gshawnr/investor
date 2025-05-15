@@ -20,6 +20,7 @@ describe("ProfileService", () => {
         beta: 1.2,
         industry: "Consumer Electronics",
         sector: "Technology",
+        raw: { companyName: "Apple Inc.", ceo: "Tim Cook" },
       };
 
       mockProfile.findOne.mockResolvedValue(null);
@@ -27,7 +28,7 @@ describe("ProfileService", () => {
       const mockSave = jest.fn().mockResolvedValue({
         ...input,
         ticker: "aapl",
-        raw: input,
+        raw: input.raw,
       });
 
       (mockProfile as unknown as jest.Mock).mockImplementation(() => ({
@@ -41,7 +42,7 @@ describe("ProfileService", () => {
       // Check constructor was called with the transformed data
       expect(mockProfile).toHaveBeenCalledWith({
         ...input,
-        raw: { ...input },
+        raw: { ...input.raw },
       });
 
       expect(mockSave).toHaveBeenCalled();

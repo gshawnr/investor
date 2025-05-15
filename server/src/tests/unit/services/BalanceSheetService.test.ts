@@ -1,6 +1,7 @@
 import BalanceSheetService from "../../../services/BalanceSheetService";
 import BalanceSheet from "../../../models/BalanceSheet";
 import { IBalanceSheet } from "../../../types/IBalanceSheet";
+import { raw } from "express";
 
 // Mock the entire BalanceSheet Mongoose model
 jest.mock("../../../models/BalanceSheet");
@@ -19,6 +20,7 @@ describe("BalanceSheetService", () => {
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
         assets: 1000,
+        raw: { symbol: "AAPL", date: "2024-12-31", assets: 1000 },
       };
 
       // Mock findOne to return null (no existing record)
@@ -29,11 +31,7 @@ describe("BalanceSheetService", () => {
         ticker: "aapl",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: {
-          ticker: "AAPL",
-          fiscalYear: "2024-12-31",
-          assets: 1000,
-        },
+        raw: inputData.raw,
       });
 
       // Mock the constructor so `new BalanceSheet()` returns an object with a `save` method
@@ -49,11 +47,7 @@ describe("BalanceSheetService", () => {
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: {
-          ticker: "AAPL",
-          fiscalYear: "2024-12-31",
-          assets: 1000,
-        },
+        raw: inputData.raw,
       });
 
       // Check save was called
@@ -64,11 +58,7 @@ describe("BalanceSheetService", () => {
         ticker: "aapl",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: {
-          ticker: "AAPL",
-          fiscalYear: "2024-12-31",
-          assets: 1000,
-        },
+        raw: inputData.raw,
       });
     });
 

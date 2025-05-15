@@ -17,7 +17,7 @@ describe("CashflowService", () => {
       const inputData = {
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
-        cashFromOps: 5000,
+        raw: { symbol: "AAPL", date: "2024-12-31", cashFromOps: 5000 },
       };
 
       mockCashFlow.findOne.mockResolvedValue(null);
@@ -26,7 +26,7 @@ describe("CashflowService", () => {
         ticker: "aapl",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: inputData,
+        raw: inputData.raw,
       });
 
       (mockCashFlow as unknown as jest.Mock).mockImplementation(() => ({
@@ -39,14 +39,14 @@ describe("CashflowService", () => {
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: inputData,
+        raw: inputData.raw,
       });
       expect(mockSave).toHaveBeenCalled();
       expect(res).toEqual({
         ticker: "aapl",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: inputData,
+        raw: inputData.raw,
       });
     });
 
