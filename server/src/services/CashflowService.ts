@@ -2,8 +2,8 @@ import CashFlow from "../models/Cashflow";
 import { ICashflow } from "../types/ICashflow";
 
 class CashFlowService {
-  async createCashFlow(raw: Partial<ICashflow>) {
-    const { ticker, fiscalYear } = raw;
+  async createCashFlow(transformedCf: Partial<ICashflow>) {
+    const { ticker, fiscalYear, raw } = transformedCf;
 
     const ticker_year = `${ticker?.toLowerCase()}_${fiscalYear?.slice(0, 4)}`;
 
@@ -16,7 +16,7 @@ class CashFlowService {
       ticker,
       fiscalYear,
       ticker_year,
-      raw: raw,
+      raw,
     });
 
     return cashFlow.save();

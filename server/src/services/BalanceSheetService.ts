@@ -2,8 +2,8 @@ import BalanceSheet from "../models/BalanceSheet";
 import { IBalanceSheet } from "../types/IBalanceSheet"; // You might need to move your interface here
 
 class BalanceSheetService {
-  async createBalanceSheet(raw: Partial<IBalanceSheet>) {
-    const { ticker, fiscalYear } = raw;
+  async createBalanceSheet(transformedBs: Partial<IBalanceSheet>) {
+    const { ticker, fiscalYear, raw } = transformedBs;
 
     const ticker_year = `${ticker?.toLowerCase()}_${fiscalYear?.slice(0, 4)}`;
 

@@ -2,8 +2,9 @@ import Profile from "../models/Profile";
 import { IProfile } from "../types/IProfile";
 
 class ProfileService {
-  async createProfile(data: Partial<IProfile>) {
-    const { ticker, companyName, exchange, sector, industry, beta } = data;
+  async createProfile(transformedProfile: Partial<IProfile>) {
+    const { ticker, companyName, exchange, sector, industry, beta, raw } =
+      transformedProfile;
 
     if (!ticker) {
       throw new Error("Ticker is required to create a profile.");
@@ -21,7 +22,7 @@ class ProfileService {
       beta,
       industry,
       sector,
-      raw: data,
+      raw,
     });
 
     return profile.save();

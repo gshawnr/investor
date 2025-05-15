@@ -2,8 +2,8 @@ import Income from "../models/Income";
 import { IIncome } from "../types/IIncome";
 
 class IncomeService {
-  async createIncome(raw: Partial<IIncome>) {
-    const { ticker, fiscalYear } = raw;
+  async createIncome(transformedIs: Partial<IIncome>) {
+    const { ticker, fiscalYear, raw } = transformedIs;
 
     const ticker_year = `${ticker?.toLowerCase()}_${fiscalYear?.slice(0, 4)}`;
 
