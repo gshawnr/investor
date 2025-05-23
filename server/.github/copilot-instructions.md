@@ -1,13 +1,13 @@
-# Testing
+# Copilot Instructions
 
----
+## Testing Conventions
 
-All tests are written in the '/src/tests/{subfolder}' directory. The test files are named after the source files they are testing.
-
-When writing tests, follow these guidelines:
-Group test directories to align with the source code directories.
-Unit tests directories are in the 'tests/unit' directory.
-Ensure there is a successful case, fail case and edge case for each tested function or method.
-Before writing a test file, review the source file to understand the code and its dependencies.
-Ensure all mocks are in place and the test file is self-contained.
-Review any other test files in the same directory to ensure consistency.
+- All unit test files must go in the `../src/tests/unit/` directory.
+- The test file should match the name of the file it tests, with `.test.ts` as the extension.
+  - Example: `src/services/currencyService.ts` → `src/tests/unit/services/currencyService.test.ts`
+- When generating tests, always include:
+  - A successful case
+  - A failure case
+  - One or more edge cases
+- Tests must be self-contained with all necessary mocks included.
+- Follow patterns in existing test files in the same directory, if present.
