@@ -1,60 +1,60 @@
-import CashFlow from "../models/Cashflow";
+import CashflowModel from "../models/Cashflow";
 import { ICashflow } from "../types/ICashflow";
 
-class CashFlowService {
-  async createCashFlow(transformedCf: Partial<ICashflow>) {
+class CashflowService {
+  async createCashflow(transformedCf: Partial<ICashflow>) {
     const { ticker, fiscalYear, raw } = transformedCf;
 
     const ticker_year = `${ticker?.toLowerCase()}_${fiscalYear?.slice(0, 4)}`;
 
-    const existing = await CashFlow.findOne({ ticker_year });
+    const existing = await CashflowModel.findOne({ ticker_year });
     if (existing) {
-      throw new Error(`CashFlow for ${ticker_year} already exists.`);
+      throw new Error(`Cashflow for ${ticker_year} already exists.`);
     }
 
-    const cashFlow = new CashFlow({
+    const Cashflow = new CashflowModel({
       ticker,
       fiscalYear,
       ticker_year,
       raw,
     });
 
-    return cashFlow.save();
+    return Cashflow.save();
   }
 
-  async getCashFlows() {
-    return CashFlow.find({});
+  async getCashflow() {
+    return CashflowModel.find({});
   }
 
-  async getCashFlowByTickerYear(ticker: string, year: string) {
+  async getCashflowByTickerYear(ticker: string, year: string) {
     const ticker_year = `${ticker.toLowerCase()}_${year}`;
-    return CashFlow.findOne({ ticker_year });
+    return CashflowModel.findOne({ ticker_year });
   }
 
-  async getCashFlowsByTicker(ticker: string) {
+  async getCashflowsByTicker(ticker: string) {
     const formattedTicker = ticker.toLowerCase();
-    return CashFlow.find({ ticker: formattedTicker }).sort({
+    return CashflowModel.find({ ticker: formattedTicker }).sort({
       fiscalYear: -1,
     });
   }
 
-  async updateCashFlow(
+  async updateCashflow(
     ticker: string,
     year: string,
     updates: Partial<ICashflow>
   ) {
     const ticker_year = `${ticker.toLowerCase()}_${year}`;
-    return CashFlow.findOneAndUpdate(
+    return CashflowModel.findOneAndUpdate(
       { ticker_year },
       { $set: updates },
       { new: true, runValidators: true }
     );
   }
 
-  async deleteCashFlow(ticker: string, year: string) {
+  async deleteCashflow(ticker: string, year: string) {
     const ticker_year = `${ticker.toLowerCase()}_${year}`;
-    return CashFlow.findOneAndDelete({ ticker_year });
+    return CashflowModel.findOneAndDelete({ ticker_year });
   }
 }
 
-export default new CashFlowService();
+export default new CashflowService();

@@ -27,8 +27,8 @@ export const getIncomes = async (params: any): Promise<any> => {
 
 export const getCashflows = async (params: any): Promise<any> => {
   const { ticker, period = "annual", limit = "10" } = params;
-  const limitNum = parseInt(limit); // TODO may be unnecessary
 
+  const limitNum = parseInt(limit);
   const fetch = constructFetch("cash-flow-statement", ticker, period, limitNum);
 
   const response = await apiClient.get(fetch);
@@ -54,6 +54,6 @@ const constructFetch = (
   if (period) base = base + `&period=${period}`;
   if (limit) base = base + `&limit=${limit}`;
 
-  console.log("fetching", base);
+  console.log("fetching", type, ticker, period, limit);
   return base;
 };

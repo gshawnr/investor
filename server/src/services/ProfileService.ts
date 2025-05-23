@@ -32,6 +32,10 @@ class ProfileService {
     return Profile.find({});
   }
 
+  async getTickers() {
+    return Profile.find({}, { ticker: 1 });
+  }
+
   async getProfileByTicker(ticker: string) {
     return Profile.findOne({ ticker: ticker.toLowerCase() });
   }

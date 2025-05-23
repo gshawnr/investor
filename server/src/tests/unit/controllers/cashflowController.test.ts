@@ -1,10 +1,10 @@
-import CashFlowController from "../../../controllers/cashflowController";
-import CashFlowService from "../../../services/CashflowService";
+import cashflowController from "../../../controllers/cashflowController";
+import CashflowService from "../../../services/CashflowService";
 import { Request, Response, NextFunction } from "express";
 
 jest.mock("../../../services/CashflowService");
 
-describe("CashFlowController", () => {
+describe("cashflowController", () => {
   const mockReq = {} as Request;
   const mockRes = {
     status: jest.fn().mockReturnThis(),
@@ -17,36 +17,36 @@ describe("CashFlowController", () => {
     jest.clearAllMocks();
   });
 
-  describe("createCashFlow", () => {
+  describe("createCashflow", () => {
     it("should create a cash flow and return 201", async () => {
       const mockData = { ticker: "aapl", year: "2024", cash: 5000 };
-      (CashFlowService.createCashFlow as jest.Mock).mockResolvedValue(mockData);
+      (CashflowService.createCashflow as jest.Mock).mockResolvedValue(mockData);
 
       mockReq.body = mockData;
 
-      await CashFlowController.createCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.createCashflow(mockReq, mockRes, mockNext);
 
-      expect(CashFlowService.createCashFlow).toHaveBeenCalledWith(mockData);
+      expect(CashflowService.createCashflow).toHaveBeenCalledWith(mockData);
       expect(mockRes.status).toHaveBeenCalledWith(201);
       expect(mockRes.json).toHaveBeenCalledWith(mockData);
     });
 
     it("should call next on error", async () => {
       const error = new Error("Test error");
-      (CashFlowService.createCashFlow as jest.Mock).mockRejectedValue(error);
+      (CashflowService.createCashflow as jest.Mock).mockRejectedValue(error);
 
-      await CashFlowController.createCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.createCashflow(mockReq, mockRes, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(error);
     });
   });
 
-  describe("getCashFlow", () => {
+  describe("getCashflow", () => {
     it("should return 400 if year is invalid", async () => {
       mockReq.params = { ticker: "AAPL" };
       mockReq.query = { year: "20xx" };
 
-      await CashFlowController.getCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.getCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -57,15 +57,15 @@ describe("CashFlowController", () => {
     it("should return 404 if no result found for year", async () => {
       mockReq.params = { ticker: "AAPL" };
       mockReq.query = { year: "2023" };
-      (CashFlowService.getCashFlowByTickerYear as jest.Mock).mockResolvedValue(
+      (CashflowService.getCashflowByTickerYear as jest.Mock).mockResolvedValue(
         null
       );
 
-      await CashFlowController.getCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.getCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
-        message: "cashflow not found",
+        message: "Cashflow not found",
       });
     });
 
@@ -73,11 +73,11 @@ describe("CashFlowController", () => {
       const mockResult = { ticker: "aapl", year: "2023" };
       mockReq.params = { ticker: "AAPL" };
       mockReq.query = { year: "2023" };
-      (CashFlowService.getCashFlowByTickerYear as jest.Mock).mockResolvedValue(
+      (CashflowService.getCashflowByTickerYear as jest.Mock).mockResolvedValue(
         mockResult
       );
 
-      await CashFlowController.getCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.getCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.json).toHaveBeenCalledWith(mockResult);
     });
@@ -86,27 +86,27 @@ describe("CashFlowController", () => {
       const mockResults = [{ year: "2023" }, { year: "2022" }];
       mockReq.params = { ticker: "AAPL" };
       mockReq.query = {};
-      (CashFlowService.getCashFlowsByTicker as jest.Mock).mockResolvedValue(
+      (CashflowService.getCashflowsByTicker as jest.Mock).mockResolvedValue(
         mockResults
       );
 
-      await CashFlowController.getCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.getCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith(mockResults);
     });
   });
 
-  describe("updateCashFlow", () => {
+  describe("updateCashflow", () => {
     it("should update and return updated result", async () => {
       const mockUpdated = { ticker: "aapl", year: "2024", cash: 9999 };
       mockReq.params = { ticker: "AAPL", year: "2024" };
       mockReq.body = { _id: "123", cash: 9999 };
-      (CashFlowService.updateCashFlow as jest.Mock).mockResolvedValue(
+      (CashflowService.updateCashflow as jest.Mock).mockResolvedValue(
         mockUpdated
       );
 
-      await CashFlowController.updateCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.updateCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.json).toHaveBeenCalledWith(mockUpdated);
     });
@@ -114,23 +114,23 @@ describe("CashFlowController", () => {
     it("should return 404 if nothing is updated", async () => {
       mockReq.params = { ticker: "AAPL", year: "2024" };
       mockReq.body = { _id: "123", cash: 9999 };
-      (CashFlowService.updateCashFlow as jest.Mock).mockResolvedValue(null);
+      (CashflowService.updateCashflow as jest.Mock).mockResolvedValue(null);
 
-      await CashFlowController.updateCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.updateCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
-        message: "cashflow not found",
+        message: "Cashflow not found",
       });
     });
   });
 
-  describe("deleteCashFlow", () => {
+  describe("deleteCashflow", () => {
     it("should delete and return 204", async () => {
       mockReq.params = { ticker: "AAPL", year: "2023" };
-      (CashFlowService.deleteCashFlow as jest.Mock).mockResolvedValue({});
+      (CashflowService.deleteCashflow as jest.Mock).mockResolvedValue({});
 
-      await CashFlowController.deleteCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.deleteCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(204);
       expect(mockRes.send).toHaveBeenCalled();
@@ -138,13 +138,13 @@ describe("CashFlowController", () => {
 
     it("should return 404 if nothing deleted", async () => {
       mockReq.params = { ticker: "AAPL", year: "2023" };
-      (CashFlowService.deleteCashFlow as jest.Mock).mockResolvedValue(null);
+      (CashflowService.deleteCashflow as jest.Mock).mockResolvedValue(null);
 
-      await CashFlowController.deleteCashFlow(mockReq, mockRes, mockNext);
+      await cashflowController.deleteCashflow(mockReq, mockRes, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
-        message: "CashFlow not found",
+        message: "Cashflow not found",
       });
     });
   });

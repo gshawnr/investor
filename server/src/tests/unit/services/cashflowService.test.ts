@@ -5,14 +5,14 @@ import { ICashflow } from "../../../types/ICashflow";
 jest.mock("../../../models/Cashflow");
 
 describe("CashflowService", () => {
-  let mockCashFlow: jest.Mocked<typeof Cashflow>;
+  let mockCashflow: jest.Mocked<typeof Cashflow>;
 
   beforeEach(() => {
-    mockCashFlow = Cashflow as jest.Mocked<typeof Cashflow>;
+    mockCashflow = Cashflow as jest.Mocked<typeof Cashflow>;
     jest.clearAllMocks();
   });
 
-  describe("createCashFlow", () => {
+  describe("createCashflow", () => {
     it("should create a cash flow successfully", async () => {
       const inputData = {
         ticker: "AAPL",
@@ -20,7 +20,7 @@ describe("CashflowService", () => {
         raw: { symbol: "AAPL", date: "2024-12-31", cashFromOps: 5000 },
       };
 
-      mockCashFlow.findOne.mockResolvedValue(null);
+      mockCashflow.findOne.mockResolvedValue(null);
 
       const mockSave = jest.fn().mockResolvedValue({
         ticker: "aapl",
@@ -29,13 +29,13 @@ describe("CashflowService", () => {
         raw: inputData.raw,
       });
 
-      (mockCashFlow as unknown as jest.Mock).mockImplementation(() => ({
+      (mockCashflow as unknown as jest.Mock).mockImplementation(() => ({
         save: mockSave,
       }));
 
-      const res = await CashflowService.createCashFlow(inputData);
+      const res = await CashflowService.createCashflow(inputData);
 
-      expect(mockCashFlow).toHaveBeenCalledWith({
+      expect(mockCashflow).toHaveBeenCalledWith({
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
@@ -56,59 +56,59 @@ describe("CashflowService", () => {
         fiscalYear: "2024-12-31",
       };
 
-      mockCashFlow.findOne.mockResolvedValue({});
+      mockCashflow.findOne.mockResolvedValue({});
 
-      await expect(CashflowService.createCashFlow(inputData)).rejects.toThrow(
-        "CashFlow for aapl_2024 already exists."
+      await expect(CashflowService.createCashflow(inputData)).rejects.toThrow(
+        "Cashflow for aapl_2024 already exists."
       );
 
-      expect(mockCashFlow).not.toHaveBeenCalledWith(
+      expect(mockCashflow).not.toHaveBeenCalledWith(
         expect.objectContaining({ raw: inputData })
       );
     });
   });
 
   describe("Read Operations", () => {
-    it("getCashFlows should return all cash flows", async () => {
+    it("getCashflows should return all cash flows", async () => {
       const mockResult = [{ ticker: "aapl", fiscalYear: "2024-12-31" }];
-      mockCashFlow.find.mockResolvedValue(mockResult);
+      mockCashflow.find.mockResolvedValue(mockResult);
 
-      const res = await CashflowService.getCashFlows();
+      const res = await CashflowService.getCashflow();
 
-      expect(mockCashFlow.find).toHaveBeenCalledWith({});
+      expect(mockCashflow.find).toHaveBeenCalledWith({});
       expect(res).toEqual(mockResult);
     });
 
-    it("getCashFlowByTickerYear should return a cash flow", async () => {
+    it("getCashflowByTickerYear should return a cash flow", async () => {
       const mockResult = { ticker: "aapl", fiscalYear: "2023-12-31" };
-      mockCashFlow.findOne.mockResolvedValue(mockResult);
+      mockCashflow.findOne.mockResolvedValue(mockResult);
 
-      const res = await CashflowService.getCashFlowByTickerYear("AAPL", "2023");
+      const res = await CashflowService.getCashflowByTickerYear("AAPL", "2023");
 
-      expect(mockCashFlow.findOne).toHaveBeenCalledWith({
+      expect(mockCashflow.findOne).toHaveBeenCalledWith({
         ticker_year: "aapl_2023",
       });
       expect(res).toEqual(mockResult);
     });
 
-    it("getCashFlowsByTicker should return sorted cash flows", async () => {
+    it("getCashflowsByTicker should return sorted cash flows", async () => {
       const mockResult = [
         { ticker: "aapl", fiscalYear: "2024-12-31" },
         { ticker: "aapl", fiscalYear: "2023-12-31" },
       ];
 
       const sortMock = { sort: jest.fn().mockResolvedValue(mockResult) };
-      mockCashFlow.find.mockReturnValue(sortMock as any);
+      mockCashflow.find.mockReturnValue(sortMock as any);
 
-      const res = await CashflowService.getCashFlowsByTicker("AAPL");
+      const res = await CashflowService.getCashflowsByTicker("AAPL");
 
-      expect(mockCashFlow.find).toHaveBeenCalledWith({ ticker: "aapl" });
+      expect(mockCashflow.find).toHaveBeenCalledWith({ ticker: "aapl" });
       expect(sortMock.sort).toHaveBeenCalledWith({ fiscalYear: -1 });
       expect(res).toEqual(mockResult);
     });
   });
 
-  describe("updateCashFlow", () => {
+  describe("updateCashflow", () => {
     it("should update and return the updated cash flow", async () => {
       const updates = { raw: { cashFromOps: 9999 } };
       const mockUpdated = {
@@ -117,11 +117,11 @@ describe("CashflowService", () => {
         raw: updates.raw,
       };
 
-      mockCashFlow.findOneAndUpdate.mockResolvedValue(mockUpdated);
+      mockCashflow.findOneAndUpdate.mockResolvedValue(mockUpdated);
 
-      const res = await CashflowService.updateCashFlow("AAPL", "2024", updates);
+      const res = await CashflowService.updateCashflow("AAPL", "2024", updates);
 
-      expect(mockCashFlow.findOneAndUpdate).toHaveBeenCalledWith(
+      expect(mockCashflow.findOneAndUpdate).toHaveBeenCalledWith(
         { ticker_year: "aapl_2024" },
         { $set: updates },
         { new: true, runValidators: true }
@@ -130,7 +130,7 @@ describe("CashflowService", () => {
     });
   });
 
-  describe("deleteCashFlow", () => {
+  describe("deleteCashflow", () => {
     it("should delete and return the deleted cash flow", async () => {
       const mockDeleted = {
         ticker: "aapl",
@@ -138,11 +138,11 @@ describe("CashflowService", () => {
         ticker_year: "aapl_2023",
       };
 
-      mockCashFlow.findOneAndDelete.mockResolvedValue(mockDeleted);
+      mockCashflow.findOneAndDelete.mockResolvedValue(mockDeleted);
 
-      const res = await CashflowService.deleteCashFlow("AAPL", "2023");
+      const res = await CashflowService.deleteCashflow("AAPL", "2023");
 
-      expect(mockCashFlow.findOneAndDelete).toHaveBeenCalledWith({
+      expect(mockCashflow.findOneAndDelete).toHaveBeenCalledWith({
         ticker_year: "aapl_2023",
       });
       expect(res).toEqual(mockDeleted);

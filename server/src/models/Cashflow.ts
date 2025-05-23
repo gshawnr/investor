@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { ICashflow } from "../types/ICashflow";
 
-const cashflowSchema: Schema = new Schema(
+const CashflowSchema: Schema = new Schema(
   {
     ticker: {
       type: String,
@@ -26,6 +26,6 @@ const cashflowSchema: Schema = new Schema(
   { timestamps: true }
 );
 
-const CashFlow = mongoose.model<ICashflow>("Cashflow", cashflowSchema);
+const Cashflow = mongoose.model<ICashflow>("Cashflow", CashflowSchema);
 
-export default CashFlow;
+export default Cashflow;

@@ -4,15 +4,15 @@ import cashflowController from "../controllers/cashflowController";
 const router = express.Router();
 
 // POST
-router.post("/", cashflowController.createCashFlow);
+router.post("/", cashflowController.createCashflow);
 
 // GET
-router.get("/:ticker", cashflowController.getCashFlow);
+router.get("/:ticker", cashflowController.getCashflow);
 
 // UPDATE
-router.put("/:ticker/:year", cashflowController.updateCashFlow);
+router.put("/:ticker/:year", cashflowController.updateCashflow);
 
 // DELETE
-router.delete("/:ticker/:year", cashflowController.deleteCashFlow);
+router.delete("/:ticker/:year", cashflowController.deleteCashflow);
 
 export default router;
