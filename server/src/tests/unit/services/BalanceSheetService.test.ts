@@ -89,13 +89,16 @@ describe("BalanceSheetService", () => {
     });
 
     describe("getBalanceSheets", () => {
-      it("should return one balance sheet", async () => {
-        const mockResult = { ticker: "aapl", fiscalYear: "2024-12-31" };
-        mockBalanceSheet.findOne.mockResolvedValue(mockResult);
+      it("should return all balance sheets", async () => {
+        const mockResult = [
+          { ticker: "aapl", fiscalYear: "2023-12-31" },
+          { ticker: "aapl", fiscalYear: "2024-12-31" },
+        ];
+        mockBalanceSheet.find.mockResolvedValue(mockResult);
 
         const res = await BalanceSheetService.getBalanceSheets();
 
-        expect(mockBalanceSheet.findOne).toHaveBeenCalledWith({});
+        expect(mockBalanceSheet.find).toHaveBeenCalledWith({});
         expect(res).toEqual(mockResult);
       });
     });

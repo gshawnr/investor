@@ -8,3 +8,9 @@ export interface ICashflow extends Document {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface ICashflowRaw {
+  capitalExpenditure: number;
+  netCashProvidedByOperatingActivities: number;
+  [key: string]: any; // Allows for additional properties
+}

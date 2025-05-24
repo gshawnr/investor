@@ -23,7 +23,7 @@ class BalanceSheetService {
   }
 
   async getBalanceSheets() {
-    return BalanceSheet.findOne({});
+    return BalanceSheet.find({});
   }
 
   async getBalanceSheetByTickerYear(ticker: string, year: string) {

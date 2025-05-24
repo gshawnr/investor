@@ -7,6 +7,7 @@ import incomeRoutes from "../routes/incomeRoutes";
 import calculationConstantsRoutes from "../routes/calculationContantsRoutes";
 import exchangeRateRoutes from "../routes/exchangeRateRoutes";
 import statementFetchRoutes from "../routes/statementFetchRoutes";
+import summaryRoutes from "../routes/summaryRoutes";
 import { errorHandler } from "../middleware/errorHandler";
 import { AppError } from "../utils/AppError";
 
@@ -25,6 +26,7 @@ app.use("/api/incomes", incomeRoutes);
 app.use("/api/calculation-constants", calculationConstantsRoutes);
 app.use("/api/exchange-rate", exchangeRateRoutes);
 app.use("/api/fetch", statementFetchRoutes);
+app.use("/api/summaries", summaryRoutes);
 
 // Handle undefined routes
 app.use((req, res, next) => {
