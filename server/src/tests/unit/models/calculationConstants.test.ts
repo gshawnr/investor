@@ -82,11 +82,11 @@ describe("CalculationConstants Model", () => {
       taxRate: 0.25,
     };
 
-    await new CalculationConstants(data).save();
+    const res = await new CalculationConstants(data).save();
 
     let err: mongoose.Error | null = null;
     try {
-      await new CalculationConstants(data).save();
+      const res = await new CalculationConstants(data).save();
     } catch (error) {
       err = error as mongoose.Error;
     }

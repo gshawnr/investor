@@ -11,7 +11,7 @@ const CashflowSchema: Schema = new Schema(
     fiscalYear: {
       type: String,
       required: true,
-      match: /^\d{4}-\d{2}-\d{2}$/, // Validates the 'yyyy-mm-dd' format
+      match: /^\d{4}$/, // Validates the 'yyyy' format
     },
     ticker_year: {
       type: String,

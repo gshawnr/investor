@@ -11,8 +11,14 @@ jest.mock("../../../controllers/statementFetchController", () => ({
   incomeFetch: jest.fn((req, res) =>
     res.status(200).json({ message: "income fetched" })
   ),
-  CashflowFetch: jest.fn((req, res) =>
+  cashflowFetch: jest.fn((req, res) =>
     res.status(200).json({ message: "cashflow fetched" })
+  ),
+  priceFetchByTicker: jest.fn((req, res) =>
+    res.status(200).json({ message: "prices fetched" })
+  ),
+  updatePriceByTicker: jest.fn((req, res) =>
+    res.status(200).json({ message: "prices fetched" })
   ),
   allStatementsFetch: jest.fn((req, res) =>
     res.status(200).json({ message: "all statements fetched" })
@@ -85,16 +91,16 @@ describe("statementFetchRoutes", () => {
   });
 
   describe("GET /statements/cashflow", () => {
-    it("should call CashflowFetch and return 200", async () => {
+    it("should call cashflowFetch and return 200", async () => {
       const res = await request(app).get("/api/fetch/cashflow");
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ message: "cashflow fetched" });
-      expect(statementFetchController.CashflowFetch).toHaveBeenCalled();
+      expect(statementFetchController.cashflowFetch).toHaveBeenCalled();
     });
 
     it("should handle controller error", async () => {
       (
-        statementFetchController.CashflowFetch as jest.Mock
+        statementFetchController.cashflowFetch as jest.Mock
       ).mockImplementationOnce((req, res) =>
         res.status(500).json({ error: "fail" })
       );

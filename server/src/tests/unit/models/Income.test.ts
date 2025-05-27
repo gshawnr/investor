@@ -24,11 +24,11 @@ describe("Income Model", () => {
   it("should save a valid income document", async () => {
     const validData = {
       ticker: "AAPL",
-      fiscalYear: "2023-09-30",
+      fiscalYear: "2023",
       ticker_year: "aapl_2023",
       raw: {
         ticker: "AAPL",
-        fiscalYear: "2023-09-30",
+        fiscalYear: "2023",
         revenue: 100000,
       },
     };
@@ -93,22 +93,22 @@ describe("Income Model", () => {
   it("should enforce unique constraint on ticker_year", async () => {
     const data = {
       ticker: "aapl",
-      fiscalYear: "2023-09-30",
+      fiscalYear: "2023",
       ticker_year: "aapl_2023",
       raw: {
         ticker: "AAPL",
-        fiscalYear: "2023-09-30",
+        fiscalYear: "2023",
         revenue: 100000,
       },
     };
 
     const valid = new Income(data);
-    await valid.save();
+    const res = await valid.save();
 
     let err: mongoose.Error | null = null;
     try {
       const invalid = new Income(data);
-      await invalid.save();
+      const res = await invalid.save();
     } catch (error) {
       err = error as mongoose.Error;
     }

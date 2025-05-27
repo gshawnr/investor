@@ -246,14 +246,14 @@ describe("statementFetchController", () => {
     });
   });
 
-  describe("CashflowFetch", () => {
+  describe("cashflowFetch", () => {
     it("should fetch cashflow statements and respond 201 (success case)", async () => {
       req.query = { ticker: "AAPL", period: "annual", limit: "2" };
       (
         StatementFetchService.fetchCashflowStatements as jest.Mock
       ).mockResolvedValue({ data: "cashflow" });
 
-      await statementFetchController.CashflowFetch(
+      await statementFetchController.cashflowFetch(
         req as Request,
         res as Response,
         next
@@ -277,7 +277,7 @@ describe("statementFetchController", () => {
         StatementFetchService.fetchCashflowStatements as jest.Mock
       ).mockRejectedValue(error);
 
-      await statementFetchController.CashflowFetch(
+      await statementFetchController.cashflowFetch(
         req as Request,
         res as Response,
         next
@@ -292,7 +292,7 @@ describe("statementFetchController", () => {
         StatementFetchService.fetchCashflowStatements as jest.Mock
       ).mockResolvedValue({ data: "empty" });
 
-      await statementFetchController.CashflowFetch(
+      await statementFetchController.cashflowFetch(
         req as Request,
         res as Response,
         next

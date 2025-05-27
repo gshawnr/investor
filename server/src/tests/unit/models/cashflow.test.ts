@@ -24,11 +24,11 @@ describe("Cashflow Model", () => {
   it("should save a valid Cashflow document", async () => {
     const validData = {
       ticker: "MSFT",
-      fiscalYear: "2024-12-31",
+      fiscalYear: "2024",
       ticker_year: "msft_2024",
       raw: {
         ticker: "MSFT",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         cashFromOperations: 5000,
       },
     };
@@ -94,16 +94,16 @@ describe("Cashflow Model", () => {
   it("should enforce unique constraint on ticker_year", async () => {
     const data = {
       ticker: "msft",
-      fiscalYear: "2024-12-31",
+      fiscalYear: "2024",
       ticker_year: "MSFT_2024",
       raw: {
         ticker: "MSFT",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         cashFromOperations: 5000,
       },
     };
 
-    await new Cashflow(data).save();
+    const res = await new Cashflow(data).save();
 
     let err: mongoose.Error | null = null;
     try {

@@ -43,7 +43,7 @@ const allStatementsFetch = async (
           try {
             const { ticker: t } = obj;
 
-            const [balanceSheet, incomeStatement, cashflowStatement] =
+            const [balanceSheet, incomeStatement, cashflowStatement, price] =
               await Promise.all([
                 StatementFetchService.fetchBalanceSheets({
                   ticker: t,
@@ -60,12 +60,19 @@ const allStatementsFetch = async (
                   period,
                   limit,
                 }),
+                StatementFetchService.fetchPriceByTicker({
+                  ticker: t,
+                  from: `${new Date().getFullYear() - 11}-01-01`,
+                  to: `${new Date().getFullYear()}-01-31`,
+                }),
               ]);
+
             return {
               ticker: t,
               balanceSheet,
               incomeStatement,
               cashflowStatement,
+              price,
             };
           } catch (err) {
             errors.push({ ticker: obj.ticker, error: err });
@@ -128,7 +135,7 @@ const incomeFetch = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const CashflowFetch = async (
+const cashflowFetch = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -149,9 +156,68 @@ const CashflowFetch = async (
   }
 };
 
+const priceFetchByTicker = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { ticker, from, to } = req.query;
+    const currentYear = new Date().getFullYear();
+
+    const fromDate: string =
+      typeof from === "string" && from ? from : `${currentYear - 11}-01-01`;
+
+    const toDate: string =
+      typeof to === "string" && to ? to : `${currentYear - 1}-12-31`;
+
+    const result = await StatementFetchService.fetchPriceByTicker({
+      ticker,
+      from: fromDate,
+      to: toDate,
+    });
+
+    res.status(201).json(result);
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updatePriceByTicker = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { ticker, from, to } = req.query;
+    const currentYear = new Date().getFullYear();
+
+    // if from & to not provided, default to current year
+    const fromDate: string =
+      typeof from === "string" && from ? from : `${currentYear}-01-01`;
+
+    const toDate: string =
+      typeof to === "string" && to ? to : `${currentYear}-12-31`;
+
+    const result = await StatementFetchService.updatePriceByTicker({
+      ticker,
+      from: fromDate,
+      to: toDate,
+    });
+
+    res.status(201).json(result);
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   allStatementsFetch,
   balanceSheetFetch,
   incomeFetch,
-  CashflowFetch,
+  cashflowFetch,
+  priceFetchByTicker,
+  updatePriceByTicker,
 };

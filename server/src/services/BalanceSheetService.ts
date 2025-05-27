@@ -5,7 +5,7 @@ class BalanceSheetService {
   async createBalanceSheet(transformedBs: Partial<IBalanceSheet>) {
     const { ticker, fiscalYear, raw } = transformedBs;
 
-    const ticker_year = `${ticker?.toLowerCase()}_${fiscalYear?.slice(0, 4)}`;
+    const ticker_year = `${ticker?.toLowerCase()}_${fiscalYear}`;
 
     const existing = await BalanceSheet.findOne({ ticker_year });
     if (existing) {
@@ -14,7 +14,7 @@ class BalanceSheetService {
 
     const balanceSheet = new BalanceSheet({
       ticker,
-      fiscalYear: fiscalYear,
+      fiscalYear,
       ticker_year,
       raw: raw,
     });

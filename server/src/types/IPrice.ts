@@ -1,7 +1,8 @@
 import { Document } from "mongoose";
 
-interface IPrice extends Document {
+export interface IPrice extends Document {
   ticker: string;
-  calendarYear: string; // Format: 'yyyy-mm-dd'
-  ticker_year: string; // Unique identifier combining ticker and fiscal year
+  price: number;
+  date: string; // fomat: 'yyyy-mm-dd'
+  averagePrices: { [year: string]: number }; // Map of year to average price
 }
