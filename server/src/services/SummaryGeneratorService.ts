@@ -1,5 +1,7 @@
 // services/SummaryGeneratorService.ts
 import Profile from "../models/Profile";
+import PriceService from "./PriceService";
+import { IPrice } from "../types/IPrice";
 import IncomeStatement from "../models/Income";
 import BalanceSheet from "../models/BalanceSheet";
 import CashFlow from "../models/Cashflow";
@@ -25,6 +27,14 @@ class SummaryGeneratorService {
 
       for (const p of profiles) {
         const { ticker: t } = p;
+
+        const price = await this.getPrices(t);
+        // skip summary generation if no price data is found as metric data will not be produced
+        if (!price) {
+          console.warn(`No price data found for ticker "${t}". Skipping.`);
+          continue;
+        }
+
         const docSetsByYear = await this.getDocsByYearsForTicker(t, year);
 
         console.log(
@@ -35,7 +45,7 @@ class SummaryGeneratorService {
         const exampleTickerYears: string[] = [];
 
         for (const docSet of docSetsByYear) {
-          const summaryData = await this.createSummary(docSet, p);
+          const summaryData = await this.createSummary(docSet, p, price);
           if (summaryData) {
             createdForTicker++;
             totalSummariesCreated++;
@@ -44,13 +54,6 @@ class SummaryGeneratorService {
             }
           }
         }
-
-        console.log(
-          `Ticker "${t}" - created/updated ${createdForTicker} summaries.` +
-            (exampleTickerYears.length
-              ? ` Examples: ${exampleTickerYears.join(", ")}`
-              : "")
-        );
       }
 
       console.log(
@@ -61,6 +64,7 @@ class SummaryGeneratorService {
     }
   }
 
+  // SHOULD BE SUING THE PROFILE SERVICE INSTEAD
   private async getProfiles(ticker?: string): Promise<IProfile[]> {
     const filter: FilterQuery<IProfile> = ticker
       ? { ticker: ticker.toLowerCase() }
@@ -69,6 +73,11 @@ class SummaryGeneratorService {
     return await Profile.find(filter);
   }
 
+  private async getPrices(ticker: string): Promise<IPrice | null> {
+    return await PriceService.getPriceByTicker(ticker.toLowerCase());
+  }
+
+  // TODO if this is the same function for MetricsGeneratorService, consider refactoring to a shared utility
   private async getDocsByYearsForTicker(
     ticker: string,
     year?: string
@@ -107,7 +116,8 @@ class SummaryGeneratorService {
 
   private async createSummary(
     docArr: [IIncome, IBalanceSheet, ICashflow],
-    profile: IProfile
+    profile: IProfile,
+    price: IPrice
   ): Promise<ISummary | undefined> {
     const [income, balance, cashflow] = docArr;
 
@@ -115,7 +125,16 @@ class SummaryGeneratorService {
     const incomeRaw = income.raw as IIncomeRaw;
     const cashflowRaw = cashflow.raw as ICashflowRaw;
 
+    const year = balance.fiscalYear;
+
     try {
+      const avgPriceByYear = price.averagePrices[year];
+      if (!avgPriceByYear) {
+        throw new Error(
+          `No average price found for year ${year} in ticker ${profile.ticker}`
+        );
+      }
+
       const summaryData = {
         ticker: profile.ticker,
         fiscalYear: balance.fiscalYear,
@@ -162,7 +181,9 @@ class SummaryGeneratorService {
 
       return updatedSummary;
     } catch (err) {
-      console.error("Error saving summary data:", err);
+      const { ticker_year: ty } = balance;
+      const msg = (err as Error).message || "Unknown error";
+      console.error(`Error saving summary data for ${ty}:`, msg);
       return;
     }
   }

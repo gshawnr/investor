@@ -44,7 +44,10 @@ class CalculationConstantsService {
     return CalculationContants.find({});
   }
 
-  async getCalculationConstants(year: string) {
+  async getCalculationConstants(year?: string) {
+    if (!year) {
+      return CalculationContants.findOne({}).sort({ year: -1 }).limit(1);
+    }
     return CalculationContants.findOne({ year });
   }
 

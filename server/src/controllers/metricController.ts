@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import SummaryService from "../services/SummaryService";
+import MetricService from "../services/MetricService";
 
-export const createSummary = async (
+export const createMetric = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -14,18 +14,18 @@ export const createSummary = async (
       validatedTicker = ticker.toLowerCase();
     }
 
-    let validatedYear: string | undefined;
+    let validatedFiscalYear: string | undefined;
     if (fiscal_year && typeof fiscal_year === "string") {
       const isValidYear = /^\d{4}$/.test(fiscal_year);
-      if (isValidYear) validatedYear = fiscal_year;
+      if (isValidYear) validatedFiscalYear = fiscal_year;
     }
 
-    SummaryService.createSummaries(validatedTicker, validatedYear);
+    MetricService.createMetric(validatedTicker, validatedFiscalYear);
 
-    res.status(201).json({ message: "Summary creation initiated." });
+    res.status(201).json({ message: "Metric creation initiated." });
   } catch (err) {
     next(err);
   }
 };
 
-export default { createSummary };
+export default { createMetric };

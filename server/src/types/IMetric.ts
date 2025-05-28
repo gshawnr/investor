@@ -16,16 +16,16 @@ export interface IMetric extends Document {
     netMargin: number;
   };
   stabilityData: {
-    debtToEquity: number;
-    debtToEbitda: number;
+    debtToEquity: number | null;
+    debtToEbitda: number | null;
     currentRatio: number;
   };
   valueData: {
     dcfToAvgPrice: number;
     dcfValuePerShare: number;
-    priceToEarnings: number;
-    earningsYield: number;
-    priceToSales: number;
-    priceToBook: number;
+    priceToEarnings: number | null;
+    earningsYield: number | null;
+    priceToSales: number | null;
+    priceToBook: number | null;
   };
 }

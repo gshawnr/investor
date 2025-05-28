@@ -29,5 +29,6 @@ export interface ISummary extends Document {
   revenue: number;
   capEx: number;
   cashflowFromOps: number;
-  // avgStockPrice: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

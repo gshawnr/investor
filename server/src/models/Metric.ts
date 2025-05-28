@@ -4,7 +4,7 @@ import { IMetric } from "../types/IMetric";
 const metricSchema: Schema = new Schema(
   {
     ticker: { type: String, required: true, lowercase: true },
-    fiscalYear: { type: String, required: true, match: /^\d{4}-\d{2}-\d{2}$/ }, // Validates the 'yyyy-mm-dd' format
+    fiscalYear: { type: String, required: true, match: /^\d{4}$/ }, // Validates the 'yyyy' format
     ticker_year: { type: String, required: true, unique: true },
     avgStockPrice: { type: Number, required: true },
     industry: { type: String, required: true },
@@ -18,17 +18,17 @@ const metricSchema: Schema = new Schema(
       netMargin: { type: Number, required: true },
     },
     stabilityData: {
-      debtToEquity: { type: Number, required: true },
-      debtToEbitda: { type: Number, required: true },
+      debtToEquity: { type: Number || null, required: true },
+      debtToEbitda: { type: Number || null, required: true },
       currentRatio: { type: Number, required: true },
     },
     valueData: {
       dcfToAvgPrice: { type: Number, required: true },
       dcfValuePerShare: { type: Number, required: true },
-      priceToEarnings: { type: Number, required: true },
-      earningsYield: { type: Number, required: true },
-      priceToSales: { type: Number, required: true },
-      priceToBook: { type: Number, required: true },
+      priceToEarnings: { type: Number || null, required: true },
+      earningsYield: { type: Number || null, required: true },
+      priceToSales: { type: Number || null, required: true },
+      priceToBook: { type: Number || null, required: true },
     },
   },
   { timestamps: true }

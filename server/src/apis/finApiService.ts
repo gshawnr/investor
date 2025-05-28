@@ -47,7 +47,6 @@ export const getPrices = async (params: any): Promise<any> => {
     from,
     to
   );
-  console.log("fetching prices", fetch);
 
   const response = await apiClient.get(fetch);
   return response.data;
@@ -77,6 +76,5 @@ const constructFetch = (
   if (from) base = base + `&from=${from}`;
   if (to) base = base + `&to=${to}`;
 
-  console.log("fetching", type, ticker, period, limit);
   return base;
 };

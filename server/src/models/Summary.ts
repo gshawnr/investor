@@ -31,7 +31,6 @@ const summarySchema: Schema = new Schema(
     revenue: { type: Number, required: true },
     capEx: { type: Number, required: true },
     cashflowFromOps: { type: Number, required: true },
-    // avgStockPrice: { type: Number, required: true },
   },
   { timestamps: true }
 );

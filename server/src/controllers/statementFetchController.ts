@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import StatementFetchService from "../services/StatementFetchService";
 import ProfileService from "../services/ProfileService";
 
-const BATCH_SIZE = 50;
+const BATCH_SIZE = 35;
 
 const allStatementsFetch = async (
   req: Request,
