@@ -24,11 +24,11 @@ describe("BalanceSheet Model", () => {
   it("should save a valid balance sheet document", async () => {
     const validData = {
       ticker: "AAPL",
-      fiscalYear: "2024-12-31",
+      fiscalYear: "2024",
       ticker_year: "aapl_2024",
       raw: {
         ticker: "AAPL",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         assets: 1000,
       },
     };
@@ -76,7 +76,7 @@ describe("BalanceSheet Model", () => {
   it("should fail if fiscalYear format is invalid", async () => {
     const invalidData = new BalanceSheet({
       ticker: "aapl",
-      fiscalYear: "2024/12/31", // wrong format
+      fiscalYear: "2024-12-31", // wrong format
       ticker_year: "aapl_2024",
       raw: {
         ticker: "AAPL",
@@ -99,11 +99,11 @@ describe("BalanceSheet Model", () => {
   it("should enforce unique constraint on ticker_year", async () => {
     const data = {
       ticker: "aapl",
-      fiscalYear: "2024-12-31",
+      fiscalYear: "2024",
       ticker_year: "aapl_2024",
       raw: {
         ticker: "AAPL",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         assets: 1000,
       },
     };
@@ -112,7 +112,7 @@ describe("BalanceSheet Model", () => {
 
     let err: mongoose.Error | null = null;
     try {
-      await new BalanceSheet(data).save();
+      const res = await new BalanceSheet(data).save();
     } catch (error) {
       err = error as mongoose.Error;
     }

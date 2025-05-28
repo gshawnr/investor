@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import CashFlow from "../../../models/Cashflow";
+import Cashflow from "../../../models/Cashflow";
 import { ICashflow } from "../../../types/ICashflow";
 
 let mongoServer: MongoMemoryServer;
@@ -17,23 +17,23 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-  await CashFlow.deleteMany({});
+  await Cashflow.deleteMany({});
 });
 
-describe("CashFlow Model", () => {
-  it("should save a valid cashflow document", async () => {
+describe("Cashflow Model", () => {
+  it("should save a valid Cashflow document", async () => {
     const validData = {
       ticker: "MSFT",
-      fiscalYear: "2024-12-31",
+      fiscalYear: "2024",
       ticker_year: "msft_2024",
       raw: {
         ticker: "MSFT",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         cashFromOperations: 5000,
       },
     };
 
-    const doc = new CashFlow(validData);
+    const doc = new Cashflow(validData);
     const savedDoc = await doc.save();
 
     expect(savedDoc._id).toBeDefined();
@@ -56,7 +56,7 @@ describe("CashFlow Model", () => {
   });
 
   it("should throw validation error if required fields are missing", async () => {
-    const invalidData = new CashFlow({});
+    const invalidData = new Cashflow({});
 
     let err: mongoose.Error.ValidationError | null = null;
     try {
@@ -73,7 +73,7 @@ describe("CashFlow Model", () => {
   });
 
   it("should fail if fiscalYear format is invalid", async () => {
-    const invalidData = new CashFlow({
+    const invalidData = new Cashflow({
       ticker: "MSFT",
       fiscalYear: "2024/12/31", // wrong format
       ticker_year: "MSFT_2024",
@@ -94,20 +94,20 @@ describe("CashFlow Model", () => {
   it("should enforce unique constraint on ticker_year", async () => {
     const data = {
       ticker: "msft",
-      fiscalYear: "2024-12-31",
+      fiscalYear: "2024",
       ticker_year: "MSFT_2024",
       raw: {
         ticker: "MSFT",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         cashFromOperations: 5000,
       },
     };
 
-    await new CashFlow(data).save();
+    const res = await new Cashflow(data).save();
 
     let err: mongoose.Error | null = null;
     try {
-      await new CashFlow(data).save();
+      await new Cashflow(data).save();
     } catch (error) {
       err = error as mongoose.Error;
     }

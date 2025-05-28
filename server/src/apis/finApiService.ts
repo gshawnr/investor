@@ -1,44 +1,62 @@
 import apiClient from "./finApiClient";
 
 export const getBalanceSheets = async (params: any): Promise<any> => {
-  const { symbol, period = "annual", limit = "10" } = params;
+  const { ticker, period, limit } = params;
 
   const limitNum = parseInt(limit);
   const fetch = constructFetch(
     "balance-sheet-statement",
-    symbol,
+    ticker,
     period,
     limitNum
   );
 
+  console.log("fetching balance sheets", fetch);
   const response = await apiClient.get(fetch);
   return response.data;
 };
 
 export const getIncomes = async (params: any): Promise<any> => {
-  const { symbol, period = "annual", limit = "10" } = params;
-  const limitNum = parseInt(limit);
+  const { ticker, period, limit } = params;
 
-  const fetch = constructFetch("income-statement", symbol, period, limitNum);
+  const limitNum = parseInt(limit);
+  const fetch = constructFetch("income-statement", ticker, period, limitNum);
 
   const response = await apiClient.get(fetch);
   return response.data;
 };
 
 export const getCashflows = async (params: any): Promise<any> => {
-  const { symbol, period = "annual", limit = "10" } = params;
-  const limitNum = parseInt(limit);
+  const { ticker, period, limit } = params;
 
-  const fetch = constructFetch("cash-flow-statement", symbol, period, limitNum);
+  const limitNum = parseInt(limit);
+  const fetch = constructFetch("cash-flow-statement", ticker, period, limitNum);
 
   const response = await apiClient.get(fetch);
   return response.data;
 };
 
-export const getProfile = async (params: any): Promise<any> => {
-  const { symbol } = params;
+export const getPrices = async (params: any): Promise<any> => {
+  const { ticker, from, to } = params;
 
-  const fetch = constructFetch("profile", symbol);
+  const fetch = constructFetch(
+    "historical-price-eod/full",
+    ticker,
+    undefined,
+    undefined,
+    from,
+    to
+  );
+
+  const response = await apiClient.get(fetch);
+  return response.data;
+};
+
+// FIX not currently used
+export const getProfile = async (params: any): Promise<any> => {
+  const { ticker } = params;
+
+  const fetch = constructFetch("profile", ticker);
 
   const response = await apiClient.get(fetch);
   return response.data;
@@ -46,13 +64,17 @@ export const getProfile = async (params: any): Promise<any> => {
 
 const constructFetch = (
   type: string,
-  symbol: string,
+  ticker: string,
   period?: string,
-  limit?: number
+  limit?: number,
+  from?: string,
+  to?: string
 ) => {
-  let base = `${type}/${symbol}?apikey=${process.env.FIN_API_KEY}`;
-  if (period) base = base + `?period=${period}`;
-  if (limit) base = base + `?limit=${period}`;
+  let base = `${type}?symbol=${ticker}&apikey=${process.env.FIN_API_KEY}`;
+  if (period) base = base + `&period=${period}`;
+  if (limit) base = base + `&limit=${limit}`;
+  if (from) base = base + `&from=${from}`;
+  if (to) base = base + `&to=${to}`;
 
   return base;
 };

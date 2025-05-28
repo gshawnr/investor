@@ -1,6 +1,7 @@
 import BalanceSheetService from "../../../services/BalanceSheetService";
 import BalanceSheet from "../../../models/BalanceSheet";
 import { IBalanceSheet } from "../../../types/IBalanceSheet";
+import { raw } from "express";
 
 // Mock the entire BalanceSheet Mongoose model
 jest.mock("../../../models/BalanceSheet");
@@ -17,8 +18,9 @@ describe("BalanceSheetService", () => {
     it("should create a balance sheet successfully", async () => {
       const inputData = {
         ticker: "AAPL",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         assets: 1000,
+        raw: { symbol: "AAPL", date: "2024", assets: 1000 },
       };
 
       // Mock findOne to return null (no existing record)
@@ -27,13 +29,9 @@ describe("BalanceSheetService", () => {
       // Mock the save function on the instance
       const mockSave = jest.fn().mockResolvedValue({
         ticker: "aapl",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         ticker_year: "aapl_2024",
-        raw: {
-          ticker: "AAPL",
-          fiscalYear: "2024-12-31",
-          assets: 1000,
-        },
+        raw: inputData.raw,
       });
 
       // Mock the constructor so `new BalanceSheet()` returns an object with a `save` method
@@ -47,13 +45,9 @@ describe("BalanceSheetService", () => {
       // Check constructor was called with the transformed data
       expect(mockBalanceSheet).toHaveBeenCalledWith({
         ticker: "AAPL",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         ticker_year: "aapl_2024",
-        raw: {
-          ticker: "AAPL",
-          fiscalYear: "2024-12-31",
-          assets: 1000,
-        },
+        raw: inputData.raw,
       });
 
       // Check save was called
@@ -62,20 +56,16 @@ describe("BalanceSheetService", () => {
       // Check the response from save
       expect(res).toEqual({
         ticker: "aapl",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
         ticker_year: "aapl_2024",
-        raw: {
-          ticker: "AAPL",
-          fiscalYear: "2024-12-31",
-          assets: 1000,
-        },
+        raw: inputData.raw,
       });
     });
 
     it("should throw an error if balance sheet already exists", async () => {
       const inputData: Partial<IBalanceSheet> = {
         ticker: "AAPL",
-        fiscalYear: "2024-12-31",
+        fiscalYear: "2024",
       };
 
       // Mock findOne to return an existing record
@@ -99,13 +89,16 @@ describe("BalanceSheetService", () => {
     });
 
     describe("getBalanceSheets", () => {
-      it("should return one balance sheet", async () => {
-        const mockResult = { ticker: "aapl", fiscalYear: "2024-12-31" };
-        mockBalanceSheet.findOne.mockResolvedValue(mockResult);
+      it("should return all balance sheets", async () => {
+        const mockResult = [
+          { ticker: "aapl", fiscalYear: "2023" },
+          { ticker: "aapl", fiscalYear: "2024" },
+        ];
+        mockBalanceSheet.find.mockResolvedValue(mockResult);
 
         const res = await BalanceSheetService.getBalanceSheets();
 
-        expect(mockBalanceSheet.findOne).toHaveBeenCalledWith({});
+        expect(mockBalanceSheet.find).toHaveBeenCalledWith({});
         expect(res).toEqual(mockResult);
       });
     });
@@ -113,8 +106,8 @@ describe("BalanceSheetService", () => {
     describe("getBalanceSheetByTickerYear", () => {
       it("should return a balance sheet by ticker and fiscal year", async () => {
         const ticker = "AAPL";
-        const fiscalYear = "2024-12-31";
-        const ticker_year = "aapl_2024-12-31";
+        const fiscalYear = "2024";
+        const ticker_year = "aapl_2024";
 
         const mockResult = { ticker: "aapl", fiscalYear, ticker_year };
         mockBalanceSheet.findOne.mockResolvedValue(mockResult);
@@ -134,8 +127,8 @@ describe("BalanceSheetService", () => {
         const ticker = "AAPL";
         const formattedTicker = "aapl";
         const mockResult = [
-          { ticker: formattedTicker, fiscalYear: "2024-12-31" },
-          { ticker: formattedTicker, fiscalYear: "2023-12-31" },
+          { ticker: formattedTicker, fiscalYear: "2024" },
+          { ticker: formattedTicker, fiscalYear: "2023" },
         ];
 
         const sortMock = { sort: jest.fn().mockResolvedValue(mockResult) };
@@ -202,7 +195,7 @@ describe("BalanceSheetService", () => {
 
       const mockDeleted = {
         ticker: "aapl",
-        fiscalYear: "2023-12-30",
+        fiscalYear: "2023",
         ticker_year: "aapl_2023",
         raw: { assets: 1000 },
       };

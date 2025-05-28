@@ -1,20 +1,20 @@
 import { Request, Response, NextFunction } from "express";
-import CashFlowService from "../services/CashflowService";
+import CashflowService from "../services/CashflowService";
 
-const createCashFlow = async (
+const createCashflow = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const result = await CashFlowService.createCashFlow(req.body);
+    const result = await CashflowService.createCashflow(req.body);
     res.status(201).json(result);
   } catch (err) {
     next(err);
   }
 };
 
-const getCashFlow = async (req: Request, res: Response, next: NextFunction) => {
+const getCashflow = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { ticker } = req.params;
     const { year } = req.query;
@@ -26,19 +26,19 @@ const getCashFlow = async (req: Request, res: Response, next: NextFunction) => {
         return;
       }
 
-      const result = await CashFlowService.getCashFlowByTickerYear(
+      const result = await CashflowService.getCashflowByTickerYear(
         ticker,
         year as string
       );
 
       if (!result) {
-        res.status(404).json({ message: "cashflow not found" });
+        res.status(404).json({ message: "Cashflow not found" });
         return;
       }
       res.status(200).json(result);
       return;
     } else {
-      const results = await CashFlowService.getCashFlowsByTicker(ticker);
+      const results = await CashflowService.getCashflowsByTicker(ticker);
       res.status(200).json(results);
       return;
     }
@@ -47,7 +47,7 @@ const getCashFlow = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const updateCashFlow = async (
+const updateCashflow = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -65,14 +65,14 @@ const updateCashFlow = async (
       return;
     }
 
-    const result = await CashFlowService.updateCashFlow(
+    const result = await CashflowService.updateCashflow(
       ticker,
       year,
       updateData
     );
 
     if (!result) {
-      res.status(404).json({ message: "cashflow not found" });
+      res.status(404).json({ message: "Cashflow not found" });
       return;
     }
     res.status(200).json(result);
@@ -81,14 +81,13 @@ const updateCashFlow = async (
   }
 };
 
-const deleteCashFlow = async (
+const deleteCashflow = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { ticker, year } = req.params;
-    const result = await CashFlowService.deleteCashFlow(ticker, year);
 
     const isValidYear = /^\d{4}$/.test(year as string);
     if (!isValidYear) {
@@ -96,8 +95,10 @@ const deleteCashFlow = async (
       return;
     }
 
+    const result = await CashflowService.deleteCashflow(ticker, year);
+
     if (!result) {
-      res.status(404).json({ message: "CashFlow not found" });
+      res.status(404).json({ message: "Cashflow not found" });
       return;
     }
 
@@ -108,8 +109,8 @@ const deleteCashFlow = async (
 };
 
 export default {
-  createCashFlow,
-  getCashFlow,
-  updateCashFlow,
-  deleteCashFlow,
+  createCashflow,
+  getCashflow,
+  updateCashflow,
+  deleteCashflow,
 };

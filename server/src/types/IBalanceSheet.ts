@@ -9,3 +9,15 @@ export interface IBalanceSheet extends Document {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface IBalanceSheetRaw {
+  totalAssets: number;
+  reportedCurrency: string;
+  totalCurrentAssets: number;
+  totalCurrentLiabilities: number;
+  totalEquity: number;
+  totalLiabilities: number;
+  longTermDebt: number;
+  totalDebt: number;
+  [key: string]: any; // Allows for additional properties
+}

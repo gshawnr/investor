@@ -8,3 +8,19 @@ export interface IIncome extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IIncomeRaw {
+  weightedAverageShsOut: number;
+  weightedAverageShsOutDil: number;
+  costOfRevenue: number;
+  depreciationAndAmortization: number;
+  ebitda: number;
+  eps: number;
+  epsDiluted: number;
+  grossProfit: number;
+  netIncome: number;
+  operatingExpenses: number;
+  operatingIncome: number;
+  revenue: number;
+  [key: string]: any; // Allows for additional properties
+}

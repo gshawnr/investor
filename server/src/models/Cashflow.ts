@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { ICashflow } from "../types/ICashflow";
 
-const cashflowSchema: Schema = new Schema(
+const CashflowSchema: Schema = new Schema(
   {
     ticker: {
       type: String,
@@ -11,7 +11,7 @@ const cashflowSchema: Schema = new Schema(
     fiscalYear: {
       type: String,
       required: true,
-      match: /^\d{4}-\d{2}-\d{2}$/, // Validates the 'yyyy-mm-dd' format
+      match: /^\d{4}$/, // Validates the 'yyyy' format
     },
     ticker_year: {
       type: String,
@@ -26,6 +26,6 @@ const cashflowSchema: Schema = new Schema(
   { timestamps: true }
 );
 
-const CashFlow = mongoose.model<ICashflow>("Cashflow", cashflowSchema);
+const Cashflow = mongoose.model<ICashflow>("Cashflow", CashflowSchema);
 
-export default CashFlow;
+export default Cashflow;

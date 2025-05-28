@@ -29,7 +29,7 @@ describe("IncomeService", () => {
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: inputData,
+        raw: inputData.raw,
       });
 
       (mockIncome as unknown as jest.Mock).mockImplementation(() => ({
@@ -42,14 +42,14 @@ describe("IncomeService", () => {
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: inputData,
+        raw: inputData.raw,
       });
       expect(mockSave).toHaveBeenCalled();
       expect(res).toEqual({
         ticker: "AAPL",
         fiscalYear: "2024-12-31",
         ticker_year: "aapl_2024",
-        raw: inputData,
+        raw: inputData.raw,
       });
     });
 
