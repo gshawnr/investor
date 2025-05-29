@@ -4,59 +4,49 @@ import { ICashflowRaw } from "../types/ICashflow";
 import { IProfile } from "../types/IProfile";
 
 import { ICalculationContants } from "../types/ICalculationConstants";
-import e from "express";
 
 export const getDcfValuePerShare = (
   data: any,
   constants: ICalculationContants
 ): number => {
-  try {
-    const { riskFreeRate, equityRiskPremium, costOfDebt, taxRate } = constants;
+  const { riskFreeRate, equityRiskPremium, costOfDebt, taxRate } = constants;
 
-    const {
-      netIncome,
-      beta,
-      capEx,
-      depreciationAndAmortization,
-      longTermDebt,
-      totalDebt,
-      avgSharesOutstanding,
-      avgStockPrice,
-    } = data;
+  const {
+    netIncome,
+    beta,
+    capEx,
+    depreciationAndAmortization,
+    longTermDebt,
+    totalDebt,
+    avgSharesOutstanding,
+    avgStockPrice,
+  } = data;
 
-    if (netIncome < 0) {
-      return 0;
-    }
+  // Calculate free cash flow
+  const CFO = netIncome + depreciationAndAmortization;
+  const FCF = CFO - capEx;
 
-    // Calculate free cash flow
-    const CFO = netIncome + depreciationAndAmortization;
-    const FCF = CFO - capEx;
+  // Calculate discount rate
+  const equity = avgSharesOutstanding * avgStockPrice;
+  const debt = longTermDebt || totalDebt;
+  const costOfEquity = riskFreeRate + beta * equityRiskPremium;
+  const WACC =
+    (costOfEquity * equity) / (equity + debt) +
+    (costOfDebt * (1 - taxRate) * debt) / (equity + debt);
 
-    // Calculate discount rate
-    const equity = avgSharesOutstanding * avgStockPrice;
-    const debt = longTermDebt || totalDebt;
-    const costOfEquity = riskFreeRate + beta * equityRiskPremium;
-    const WACC =
-      (costOfEquity * equity) / (equity + debt) +
-      (costOfDebt * (1 - taxRate) * debt) / (equity + debt);
+  // Discount free cash flow to calculate intrinsic value
+  const WACC_PLUS = WACC * 1.1; // add discount factor of 10%
+  const terminalGrowthRate = 0.02; // Assumed terminal growth rate of 2%
+  const n = 20; // number of years assuming a company remains a going concern
+  const terminalFCF = FCF * Math.pow(1 + terminalGrowthRate, n);
+  const terminalValue = terminalFCF / (WACC - terminalGrowthRate);
+  const presentValue = terminalValue / Math.pow(1 + WACC_PLUS, n);
 
-    // Discount free cash flow to calculate intrinsic value
-    const WACC_PLUS = WACC * 1.1; // add discount factor of 10%
-    const terminalGrowthRate = 0.02; // Assumed terminal growth rate of 2%
-    const n = 20; // number of years assuming a company remains a going concern
-    const terminalFCF = FCF * Math.pow(1 + terminalGrowthRate, n);
-    const terminalValue = terminalFCF / (WACC - terminalGrowthRate);
-    const presentValue = terminalValue / Math.pow(1 + WACC_PLUS, n);
+  // Using Gordon Grow Model theory - NOT CURRENTLY USED
+  const terminalValueGordon =
+    (FCF * (1 + terminalGrowthRate)) / (WACC - terminalGrowthRate);
 
-    // Using Gordon Grow Model theory - NOT CURRENTLY USED
-    const terminalValueGordon =
-      (FCF * (1 + terminalGrowthRate)) / (WACC - terminalGrowthRate);
-
-    return avgSharesOutstanding > 0 ? presentValue / avgSharesOutstanding : 0;
-  } catch (err) {
-    console.log("unable to calculate dcfValuePerShare", err);
-    return 0;
-  }
+  return avgSharesOutstanding > 0 ? presentValue / avgSharesOutstanding : 0;
 };
 
 export const getPriceToEarnings = (data: any): number | null => {

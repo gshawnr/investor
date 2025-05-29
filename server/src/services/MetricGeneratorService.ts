@@ -87,7 +87,8 @@ class MetricGeneratorService {
         `Metric generation completed. Total metrics created/updated: ${totalMetricsCreated}.`
       );
     } catch (err) {
-      console.error("Metric generation failed:", err);
+      const errorMessage = (err as Error).message || "Unknown error";
+      console.error("Metric generation failed:", errorMessage);
     }
   }
 

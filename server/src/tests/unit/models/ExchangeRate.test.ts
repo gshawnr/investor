@@ -16,6 +16,10 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
+beforeEach(async () => {
+  await ExchangeRate.deleteMany({});
+});
+
 afterEach(async () => {
   await ExchangeRate.deleteMany({});
 });
