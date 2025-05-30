@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import MetricController, {
+import {
   createMetric,
   getMetrics,
 } from "../../../controllers/metricController";
 import MetricService from "../../../services/MetricService";
-import { IMetric } from "../../../types/IMetric";
 
 jest.mock("../../../services/MetricService");
 
