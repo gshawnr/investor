@@ -6,6 +6,9 @@ import summaryController from "../../../controllers/summaryController";
 // Mock the controller method
 jest.mock("../../../controllers/summaryController", () => ({
   createSummary: jest.fn((req, res) => res.status(201).send("summary created")),
+  getSummaries: jest.fn((req, res) =>
+    res.status(200).send("summaries fetched")
+  ),
 }));
 
 const app = express();
@@ -26,6 +29,16 @@ describe("Summary Routes", () => {
       expect(res.status).toBe(201);
       expect(res.text).toBe("summary created");
       expect(summaryController.createSummary).toHaveBeenCalled();
+    });
+  });
+
+  describe("GET /summaries/", () => {
+    it("should call getSummaries controller", async () => {
+      const res = await request(app).get("/summaries/");
+
+      expect(res.status).toBe(200);
+      expect(res.text).toBe("summaries fetched");
+      expect(summaryController.getSummaries).toHaveBeenCalled();
     });
   });
 });

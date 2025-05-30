@@ -16,6 +16,10 @@ class SummaryService {
     return Summary.find({});
   }
 
+  async getSummaries({ filter = {}, options = {} }) {
+    return Summary.find(filter, null, options);
+  }
+
   async getSummaryByTickerYear(ticker: string, year: string) {
     const ticker_year = `${ticker.toLowerCase()}_${year}`;
     return Summary.findOne({ ticker_year });

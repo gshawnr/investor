@@ -22,16 +22,29 @@ describe("MetricService", () => {
   });
 
   describe("getMetrics", () => {
-    it("should return all metrics", async () => {
+    it("should return all metrics with default filter and options", async () => {
       const mockMetrics = [
         { ticker: "aapl", fiscalYear: "2023" },
         { ticker: "aapl", fiscalYear: "2024" },
       ];
       (Metric.find as jest.Mock).mockResolvedValue(mockMetrics);
 
-      const res = await MetricService.getMetrics();
+      const res = await MetricService.getMetrics({});
 
-      expect(Metric.find).toHaveBeenCalledWith({});
+      expect(Metric.find).toHaveBeenCalledWith({}, null, {});
+      expect(res).toEqual(mockMetrics);
+    });
+
+    it("should apply custom filter and options", async () => {
+      const mockMetrics = [{ ticker: "aapl", fiscalYear: "2024" }];
+      const filter = { ticker: "aapl" };
+      const options = { limit: 1 };
+
+      (Metric.find as jest.Mock).mockResolvedValue(mockMetrics);
+
+      const res = await MetricService.getMetrics({ filter, options });
+
+      expect(Metric.find).toHaveBeenCalledWith(filter, null, options);
       expect(res).toEqual(mockMetrics);
     });
   });

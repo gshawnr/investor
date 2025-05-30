@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import MetricService from "../services/MetricService";
+import { IMetric } from "../types/IMetric";
+import { RequestWithPagination } from "../middleware/queryParser";
 
 export const createMetric = async (
   req: Request,
@@ -28,4 +30,20 @@ export const createMetric = async (
   }
 };
 
-export default { createMetric };
+export const getMetrics = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { pagination } = req as RequestWithPagination<IMetric>;
+    const { filter, options } = pagination || {};
+
+    const metrics = await MetricService.getMetrics({ filter, options });
+    res.status(200).json(metrics);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { createMetric, getMetrics };

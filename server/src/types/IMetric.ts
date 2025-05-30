@@ -28,4 +28,6 @@ export interface IMetric extends Document {
     priceToSales: number | null;
     priceToBook: number | null;
   };
+  createdAt?: Date;
+  updatedAt?: Date;
 }

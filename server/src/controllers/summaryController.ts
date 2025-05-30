@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { RequestWithPagination } from "../middleware/queryParser";
 import SummaryService from "../services/SummaryService";
+import { ISummary } from "../types/ISummary";
 
-export const createSummary = async (
+const createSummary = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -28,4 +30,21 @@ export const createSummary = async (
   }
 };
 
-export default { createSummary };
+const getSummaries = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { pagination } = req as RequestWithPagination<ISummary>;
+    const { filter, options } = pagination || {};
+
+    const summaries = await SummaryService.getSummaries({ filter, options });
+    res.status(200).json(summaries);
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { createSummary, getSummaries };

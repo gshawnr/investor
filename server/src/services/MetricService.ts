@@ -9,8 +9,8 @@ class MetricService {
     await MetricGeneratorService.createMetrics(ticker, fiscalYear);
   }
 
-  async getMetrics(): Promise<IMetric[]> {
-    return Metric.find({});
+  async getMetrics({ filter = {}, options = {} }): Promise<IMetric[]> {
+    return Metric.find(filter, null, options);
   }
 
   async getMetricByTickerYear(
