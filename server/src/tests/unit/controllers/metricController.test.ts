@@ -2,11 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import MetricController, {
   createMetric,
   getMetrics,
-} from "../controllers/metricController";
-import MetricService from "../services/MetricService";
-import { IMetric } from "../types/IMetric";
+} from "../../../controllers/metricController";
+import MetricService from "../../../services/MetricService";
+import { IMetric } from "../../../types/IMetric";
 
-jest.mock("../services/MetricService");
+jest.mock("../../../services/MetricService");
 
 describe("MetricController", () => {
   const mockRes = {
