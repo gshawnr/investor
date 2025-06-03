@@ -40,6 +40,7 @@ describe("Financial Utility Functions", () => {
         totalDebt: 800000,
         avgSharesOutstanding: 100000,
         avgStockPrice: 50,
+        equity: 5000000,
       };
       const result = getDcfValuePerShare(data, constants);
       expect(result).toBeGreaterThan(0);
@@ -322,5 +323,6 @@ function mockDcfData() {
     totalDebt: 300000,
     avgSharesOutstanding: 100000,
     avgStockPrice: 50,
+    equity: 500000,
   };
 }
