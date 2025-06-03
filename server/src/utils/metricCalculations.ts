@@ -18,8 +18,8 @@ export const getDcfValuePerShare = (
     depreciationAndAmortization,
     longTermDebt,
     totalDebt,
+    equity,
     avgSharesOutstanding,
-    avgStockPrice,
   } = data;
 
   // Calculate free cash flow
@@ -27,15 +27,20 @@ export const getDcfValuePerShare = (
   const FCF = CFO - capEx;
 
   // Calculate discount rate
-  const equity = avgSharesOutstanding * avgStockPrice;
+  // const equity = avgSharesOutstanding * avgStockPrice;
   const debt = longTermDebt || totalDebt;
   const costOfEquity = riskFreeRate + beta * equityRiskPremium;
-  const WACC =
-    (costOfEquity * equity) / (equity + debt) +
-    (costOfDebt * (1 - taxRate) * debt) / (equity + debt);
+
+  let WACC: number;
+  const totalCapital = equity + debt;
+  if (totalCapital == 0) WACC = 0;
+  else
+    WACC =
+      (costOfEquity * equity) / totalCapital +
+      (costOfDebt * (1 - taxRate) * debt) / totalCapital;
 
   // Discount free cash flow to calculate intrinsic value
-  const WACC_PLUS = WACC * 1.1; // add discount factor of 10%
+  const WACC_PLUS = WACC == 0 ? 1.1 : WACC * 1.1; // add discount factor of 10%
   const terminalGrowthRate = 0.02; // Assumed terminal growth rate of 2%
   const n = 20; // number of years assuming a company remains a going concern
   const terminalFCF = FCF * Math.pow(1 + terminalGrowthRate, n);
@@ -232,6 +237,7 @@ export function getValueData(
       netIncome,
       beta,
       capEx,
+      equity,
       depreciationAndAmortization,
       longTermDebt,
       totalDebt,

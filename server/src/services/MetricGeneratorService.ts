@@ -8,7 +8,7 @@ import Metric from "../models/Metric";
 import { IBalanceSheet, IBalanceSheetRaw } from "../types/IBalanceSheet";
 import BalanceSheet from "../models/BalanceSheet";
 import { ICashflow, ICashflowRaw } from "../types/ICashflow";
-import CashFlow from "../models/Cashflow";
+import Cashflow from "../models/Cashflow";
 import PriceService from "./PriceService";
 import { IMetric } from "../types/IMetric";
 import {
@@ -121,7 +121,7 @@ class MetricGeneratorService {
     const [inc, bal, cash] = await Promise.all([
       Income.find(filter),
       BalanceSheet.find(filter),
-      CashFlow.find(filter),
+      Cashflow.find(filter),
     ]);
 
     const balMap = new Map(bal.map((b) => [b.ticker_year, b]));

@@ -8,3 +8,10 @@ export const isNewerThan = (
 ): boolean => {
   return new Date(currentDate) < new Date(candidateDate);
 };
+
+export const formatDecimals = (
+  value: number,
+  decimalPlaces: number
+): number => {
+  return parseFloat(value.toFixed(decimalPlaces));
+};

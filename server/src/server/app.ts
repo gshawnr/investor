@@ -9,6 +9,7 @@ import exchangeRateRoutes from "../routes/exchangeRateRoutes";
 import statementFetchRoutes from "../routes/statementFetchRoutes";
 import summaryRoutes from "../routes/summaryRoutes";
 import metricRoutes from "../routes/metricRoutes";
+import targetRoutes from "../routes/targetRoutes";
 import { errorHandler } from "../middleware/errorHandler";
 import { AppError } from "../utils/AppError";
 
@@ -29,6 +30,7 @@ app.use("/api/exchange-rate", exchangeRateRoutes);
 app.use("/api/fetch", statementFetchRoutes);
 app.use("/api/summaries", summaryRoutes);
 app.use("/api/metrics", metricRoutes);
+app.use("/api/targets", targetRoutes);
 
 // Handle undefined routes
 app.use((req, res, next) => {

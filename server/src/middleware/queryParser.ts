@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { FilterQuery } from "mongoose";
 
 // Configurable allowed fields for sorting
-const ALLOWED_SORT_FIELDS = ["sector", "industry", "ticker"];
+const ALLOWED_SORT_FIELDS = ["sector", "industry", "ticker", "potentialReturn"];
 
 export interface QueryOptions {
   search?: string;
