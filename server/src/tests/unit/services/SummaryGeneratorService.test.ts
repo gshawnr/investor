@@ -5,6 +5,7 @@ import IncomeStatement from "../../../models/Income";
 import BalanceSheet from "../../../models/BalanceSheet";
 import CashFlow from "../../../models/Cashflow";
 import Summary from "../../../models/Summary";
+import TickerYear from "../../../models/TickerYear";
 
 jest.mock("../../../models/Profile");
 jest.mock("../../../services/PriceService");
@@ -12,6 +13,7 @@ jest.mock("../../../models/Income");
 jest.mock("../../../models/BalanceSheet");
 jest.mock("../../../models/Cashflow");
 jest.mock("../../../models/Summary");
+jest.mock("../../../models/TickerYear");
 
 describe("SummaryGeneratorService", () => {
   let profileMock: jest.Mocked<typeof Profile>;
@@ -20,6 +22,7 @@ describe("SummaryGeneratorService", () => {
   let balanceMock: jest.Mocked<typeof BalanceSheet>;
   let cashflowMock: jest.Mocked<typeof CashFlow>;
   let summaryMock: jest.Mocked<typeof Summary>;
+  let tickerYearMock: jest.Mocked<typeof TickerYear>;
 
   beforeEach(() => {
     profileMock = Profile as jest.Mocked<typeof Profile>;
@@ -28,6 +31,7 @@ describe("SummaryGeneratorService", () => {
     balanceMock = BalanceSheet as jest.Mocked<typeof BalanceSheet>;
     cashflowMock = CashFlow as jest.Mocked<typeof CashFlow>;
     summaryMock = Summary as jest.Mocked<typeof Summary>;
+    tickerYearMock = TickerYear as jest.Mocked<typeof TickerYear>;
 
     // mock out looging in console
     jest.spyOn(console, "log").mockImplementation(() => {});
@@ -103,9 +107,17 @@ describe("SummaryGeneratorService", () => {
         },
       ];
 
+      const tickerYearDoc = {
+        ticker_year: "aapl_2024",
+        year: "2024",
+        ticker: "aapl",
+        hasSummary: false,
+      };
+
       incomeMock.find.mockResolvedValue(incomeDocs as any);
       balanceMock.find.mockResolvedValue(balanceDocs as any);
       cashflowMock.find.mockResolvedValue(cashflowDocs as any);
+      tickerYearMock.findOneAndUpdate.mockResolvedValue(tickerYearDoc as any);
 
       // Mock Summary upsert result
       const updatedSummary = {
@@ -164,6 +176,20 @@ describe("SummaryGeneratorService", () => {
           fiscalYear: "2024",
         }),
         { upsert: true, new: true }
+      );
+      expect(tickerYearMock.findOneAndUpdate).toHaveBeenCalledWith(
+        {
+          ticker_year: "aapl_2024",
+        },
+        {
+          $set: {
+            ticker_year: "aapl_2024",
+            ticker: "aapl",
+            year: "2024",
+            hasSummary: true,
+          },
+        },
+        { runValidators: true, upsert: true, new: true }
       );
     });
 

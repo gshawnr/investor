@@ -1,17 +1,18 @@
 // services/SummaryGeneratorService.ts
-import Profile from "../models/Profile";
-import PriceService from "./PriceService";
-import { IPrice } from "../types/IPrice";
-import IncomeStatement from "../models/Income";
+import { FilterQuery } from "mongoose";
 import BalanceSheet from "../models/BalanceSheet";
 import CashFlow from "../models/Cashflow";
+import IncomeStatement from "../models/Income";
+import Profile from "../models/Profile";
 import Summary from "../models/Summary";
-import { ISummary } from "../types/ISummary";
 import { IBalanceSheet, IBalanceSheetRaw } from "../types/IBalanceSheet";
-import { IIncome, IIncomeRaw } from "../types/IIncome";
 import { ICashflow, ICashflowRaw } from "../types/ICashflow";
+import { IIncome, IIncomeRaw } from "../types/IIncome";
+import { IPrice } from "../types/IPrice";
 import { IProfile } from "../types/IProfile";
-import { FilterQuery } from "mongoose";
+import { ISummary } from "../types/ISummary";
+import PriceService from "./PriceService";
+import TickerYearService from "./TickerYearService";
 
 class SummaryGeneratorService {
   public async createSummaries(ticker?: string, year?: string): Promise<void> {
@@ -47,6 +48,12 @@ class SummaryGeneratorService {
         for (const docSet of docSetsByYear) {
           const summaryData = await this.createSummary(docSet, p, price);
           if (summaryData) {
+            // create / update TickerYear
+            const { ticker_year } = summaryData;
+            TickerYearService.createOrUpdateTickerYear({
+              ticker_year,
+              hasSummary: true,
+            });
             createdForTicker++;
             totalSummariesCreated++;
             if (exampleTickerYears.length < 3) {

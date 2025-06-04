@@ -19,6 +19,7 @@ import {
 } from "../utils/metricCalculations";
 import CalculationConstantsService from "./CalculationConstantsService";
 import { ICalculationContants } from "../types/ICalculationConstants";
+import TickerYearService from "./TickerYearService";
 
 class MetricGeneratorService {
   public async createMetrics(ticker?: string, year?: string): Promise<void> {
@@ -74,6 +75,13 @@ class MetricGeneratorService {
             calculationConstants
           );
           if (metricData) {
+            // create / update TickerYear
+            const { ticker_year } = metricData;
+            TickerYearService.createOrUpdateTickerYear({
+              ticker_year,
+              hasMetric: true,
+            });
+
             createdForTicker++;
             totalMetricsCreated++;
             if (exampleTickerYears.length < 3) {
