@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import ProfileService from "../services/ProfileService";
+import { IProfile } from "../types/IProfile";
+import { RequestWithPagination } from "../middleware/queryParser";
 
 const createProfile = async (
   req: Request,
@@ -38,6 +40,26 @@ const getAllProfiles = async (
   try {
     const results = await ProfileService.getProfiles();
     res.status(200).json(results);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getPaginatedProfiles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { pagination } = req as RequestWithPagination<IProfile>;
+    const { filter, options } = pagination || {};
+
+    const [profiles, totalCount] = await Promise.all([
+      ProfileService.getProfiles(filter, options),
+      ProfileService.getProfilesCount(filter),
+    ]);
+
+    res.status(200).json({ profiles, totalCount });
   } catch (err) {
     next(err);
   }
@@ -91,6 +113,7 @@ export default {
   createProfile,
   getProfile,
   getAllProfiles,
+  getPaginatedProfiles,
   updateProfile,
   deleteProfile,
 };

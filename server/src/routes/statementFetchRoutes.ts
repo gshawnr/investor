@@ -8,7 +8,7 @@ router.get("/income", statementFetchController.incomeFetch);
 router.get("/price", statementFetchController.priceFetchByTicker);
 router.get("/price/update", statementFetchController.updatePriceByTicker);
 router.get("/cashflow", statementFetchController.cashflowFetch);
+router.get("/company-profile", statementFetchController.profileFetch);
 router.get("/all", statementFetchController.allStatementsFetch);
-// router.get("/company-profile", statementFetchController.companyProfileFetch); TODO
 
 export default router;

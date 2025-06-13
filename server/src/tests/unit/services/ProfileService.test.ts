@@ -79,7 +79,7 @@ describe("ProfileService", () => {
 
       const res = await ProfileService.getProfiles();
 
-      expect(mockProfile.find).toHaveBeenCalledWith({});
+      expect(mockProfile.find).toHaveBeenCalledWith({}, null, {});
       expect(res).toEqual(mockResult);
     });
   });

@@ -156,6 +156,25 @@ const cashflowFetch = async (
   }
 };
 
+const profileFetch = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { ticker } = req.query;
+
+    const result = await StatementFetchService.fetchProfile({
+      ticker,
+    });
+
+    res.status(201).json(result);
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
 const priceFetchByTicker = async (
   req: Request,
   res: Response,
@@ -218,6 +237,7 @@ export default {
   balanceSheetFetch,
   incomeFetch,
   cashflowFetch,
+  profileFetch,
   priceFetchByTicker,
   updatePriceByTicker,
 };

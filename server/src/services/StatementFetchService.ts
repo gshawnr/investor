@@ -3,12 +3,14 @@ import {
   getIncomes,
   getCashflows,
   getPrices,
+  getProfile,
 } from "../apis/finApiService";
 import BalanceSheetService from "./BalanceSheetService";
 import IncomeService from "./IncomeService";
 import CashflowService from "./CashflowService";
 import PriceService from "./PriceService";
 import { isNewerThan } from "../utils/utiilityFunctions";
+import ProfileService from "./ProfileService";
 
 type PriceData = {
   date: string; // format: "YYYY-MM-DD"
@@ -87,12 +89,10 @@ class StatementFetchService {
   }
 
   async fetchCashflowStatements(data: any) {
-    const { ticker, period, limit } = data;
+    const { ticker } = data;
 
     const Cashflows = await getCashflows({
       ticker,
-      period,
-      limit,
     });
 
     let successCount = 0;
@@ -111,6 +111,51 @@ class StatementFetchService {
         successCount++;
       } catch (err) {
         console.error(`Error saving this Cashflow statement ${item}`, err);
+        errorCount++;
+      }
+    }
+
+    return {
+      successCount,
+      errorCount,
+      totalCount,
+    };
+  }
+
+  async fetchProfile(data: any) {
+    const { ticker } = data;
+
+    const Profiles = await getProfile({
+      ticker,
+    });
+
+    let successCount = 0;
+    let errorCount = 0;
+    const totalCount = Profiles.length;
+    for (const item of Profiles) {
+      try {
+        const {
+          symbol: ticker,
+          companyName,
+          exchange,
+          sector,
+          industry,
+          beta,
+        } = item;
+
+        await ProfileService.createProfile({
+          ticker,
+          companyName,
+          exchange,
+          sector,
+          industry,
+          beta,
+          raw: item,
+        });
+
+        successCount++;
+      } catch (err) {
+        console.error(`Error saving this Profile ${item}`, err);
         errorCount++;
       }
     }

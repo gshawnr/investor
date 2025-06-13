@@ -14,6 +14,9 @@ jest.mock("../../../controllers/statementFetchController", () => ({
   cashflowFetch: jest.fn((req, res) =>
     res.status(200).json({ message: "cashflow fetched" })
   ),
+  profileFetch: jest.fn((req, res) =>
+    res.status(200).json({ message: "profile fetched" })
+  ),
   priceFetchByTicker: jest.fn((req, res) =>
     res.status(200).json({ message: "prices fetched" })
   ),

@@ -8,6 +8,7 @@ jest.mock("../../../controllers/profileController", () => ({
   createProfile: jest.fn((req, res) => res.status(201).send("created")),
   getProfile: jest.fn((req, res) => res.status(200).send("fetched")),
   getAllProfiles: jest.fn((req, res) => res.status(200).send("fetched")),
+  getPaginatedProfiles: jest.fn((req, res) => res.status(200).send("fetched")),
   updateProfile: jest.fn((req, res) => res.status(200).send("updated")),
   deleteProfile: jest.fn((req, res) => res.status(200).send("deleted")),
 }));

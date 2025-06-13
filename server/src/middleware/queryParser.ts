@@ -65,6 +65,7 @@ export function parseQuery<T = any>(
     }
 
     // --- SORT ---
+
     const sortDirection = sortOrder === "desc" ? -1 : 1;
     const sort: Record<string, 1 | -1> = {};
 
@@ -77,7 +78,13 @@ export function parseQuery<T = any>(
     }
 
     // Always apply a secondary sort by `ticker_year` to maintain stable sort order
-    sort["ticker_year"] = sortDirection;
+    const baseUrl = req.baseUrl;
+    if (baseUrl && baseUrl.includes("/api/profiles")) {
+      sort["ticker"] = sortDirection;
+    } else {
+      // default
+      sort["ticker_year"] = sortDirection;
+    }
     pagination.options.sort = sort;
 
     // --- PAGINATION ---

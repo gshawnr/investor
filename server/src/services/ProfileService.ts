@@ -28,8 +28,12 @@ class ProfileService {
     return profile.save();
   }
 
-  async getProfiles() {
-    return Profile.find({});
+  async getProfiles(filter = {}, options = {}) {
+    return Profile.find(filter, null, options);
+  }
+
+  async getProfilesCount(filter = {}) {
+    return Profile.find(filter).countDocuments();
   }
 
   async getTickers() {

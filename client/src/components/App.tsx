@@ -1,10 +1,10 @@
+import Home from "../pages/Home";
 import styles from "./App.module.css";
-import BaseTable from "./BaseTable";
 
 function App() {
   return (
-    <div className={styles.box}>
-      <BaseTable />
+    <div className={styles.container}>
+      <Home />
     </div>
   );
 }

@@ -13,6 +13,10 @@ class MetricService {
     return Metric.find(filter, null, options);
   }
 
+  async getMetricsCount(filter = {}): Promise<number> {
+    return Metric.find(filter).countDocuments();
+  }
+
   async getMetricByTickerYear(
     ticker: string,
     year: string
