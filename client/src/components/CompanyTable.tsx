@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
 import { TablePagination } from "@mui/material";
-import { TableDisplay, IColumn } from "./TableDisplay";
+import React, { useEffect, useState } from "react";
 import { apiClient } from "../apis/apiClient";
+import { companyColumns } from "../constants/tableColumns/companyTableColumns";
 import SearchBar from "./SearchBar";
+import { TableDisplay } from "./TableDisplay";
 
 import styles from "./CompanyTable.module.css";
 
@@ -92,14 +93,3 @@ export default function CompanyTable() {
     </div>
   );
 }
-
-const companyColumns: IColumn[] = [
-  { field: "companyName", label: "Company" },
-  { field: "ticker", label: "Ticker" },
-  { field: "industry", label: "Industry" },
-  { field: "sector", label: "Sector" },
-  { field: "beta", label: "Beta" },
-  { field: "raw.ceo", label: "CEO" },
-  { field: "raw.description", label: "Summary" },
-  { field: "raw.exchangeShortName", label: "Exchange" },
-];

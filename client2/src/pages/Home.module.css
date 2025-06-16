@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+.left,
+.right {
+  padding: 10px 20px;
+}
+
+.left {
+  width: 30%;
+}
+.right {
+  width: 60%;
+}

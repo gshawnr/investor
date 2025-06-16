@@ -36,7 +36,7 @@ export default function SummaryMetricTables() {
       const fetchData = async () => {
         // page incremented to satisfy MUI and Backend structures
         const url = `${
-          process.env.REACT_APP_BASE_URL
+          import.meta.env.VITE_BASE_URL
         }/combined?pageSize=${rowsPerPage}&page=${
           page + 1
         }&search=${debouncedSearch}&fields=${SEARCH_FIELDS}`;

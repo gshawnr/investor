@@ -1,0 +1,52 @@
+/* TableDisplay.module.css */
+
+.tableContainer {
+  overflow-y: auto;
+}
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.tableRow {
+  height: 40px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tableHeader {
+  height: 60px;
+  background-color: darkslategrey;
+}
+
+/* Striped rows */
+.striped:nth-of-type(odd) {
+  background-color: #fafafa;
+}
+
+.striped:nth-of-type(even) {
+  background-color: #f0f0f0;
+}
+
+/* Hover effect */
+.striped:hover {
+  background-color: #e0e0e0;
+}
+
+.tableCell {
+  width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 8px;
+  text-align: center;
+}
+
+/* Ensures ellipsis text + tooltip */
+.cellContent {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

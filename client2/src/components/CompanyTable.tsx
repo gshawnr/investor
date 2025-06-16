@@ -1,31 +1,27 @@
 import { TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { apiClient } from "../apis/apiClient";
-import {
-  metricColumns,
-  summaryColumns,
-} from "../constants/tableColumns/summaryMetricTableColumns";
+import { companyColumns } from "../constants/tableColumns/companyTableColumns";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
 
-import styles from "./SummaryMetricTables.module.css";
+import styles from "./CompanyTable.module.css";
 
-export default function SummaryMetricTables() {
+export default function CompanyTable() {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [count, setCount] = useState(8);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [metrics, setMetrics] = useState([]);
-  const [summaries, setSummaries] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [error, setError] = useState({});
 
-  const SEARCH_FIELDS = "ticker,ticker_year,industry,sector";
+  const SEARCH_FIELDS = "ticker,companyName,industry,sector";
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setPage(0);
       setDebouncedSearch(search);
+      setPage(0);
       return;
     }, 400);
     return () => clearTimeout(handler);
@@ -36,16 +32,14 @@ export default function SummaryMetricTables() {
       const fetchData = async () => {
         // page incremented to satisfy MUI and Backend structures
         const url = `${
-          process.env.REACT_APP_BASE_URL
-        }/combined?pageSize=${rowsPerPage}&page=${
+          import.meta.env.VITE_BASE_URL
+        }/profiles/paginated?pageSize=${rowsPerPage}&page=${
           page + 1
         }&search=${debouncedSearch}&fields=${SEARCH_FIELDS}`;
-
         const data: any = await apiClient(url, {});
 
-        const { keys, metrics, summaries, totalCount } = data;
-        setMetrics(metrics);
-        setSummaries(summaries);
+        const { profiles, totalCount } = data;
+        setCompanies(profiles);
         setCount(totalCount);
       };
       fetchData();
@@ -81,18 +75,11 @@ export default function SummaryMetricTables() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.tables}>
-        <div className={styles.searchContainer}>
-          <SearchBar onSearch={validateAndSetSearch} />
-        </div>
-
-        <div className={styles.top_table}>
-          <TableDisplay data={summaries} columns={summaryColumns} />
-        </div>
-
-        <div className={styles.bottom_table}>
-          <TableDisplay data={metrics} columns={metricColumns} />
-        </div>
+      <div className={styles.searchContainer}>
+        <SearchBar onSearch={validateAndSetSearch} />
+      </div>
+      <div className={styles.table}>
+        <TableDisplay data={companies} columns={companyColumns} />
       </div>
 
       <TablePagination
