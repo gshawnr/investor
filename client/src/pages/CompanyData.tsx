@@ -1,10 +1,10 @@
 import React from "react";
 import SummaryMetricTables from "../components/SummaryMetricTables";
 
-import styles from "./Home.module.css";
+import styles from "./CompanyData.module.css";
 import CompanyTable from "../components/CompanyTable";
 
-function Home() {
+function CompanyData() {
   return (
     <div className={styles.container}>
       <div className={styles.left}>
@@ -18,4 +18,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default CompanyData;

@@ -4,8 +4,8 @@ import { Menu, X } from "lucide-react";
 
 const navItems = [
   { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
-  { name: "Services", path: "/services" },
+  { name: "Companies", path: "/companies" },
+  { name: "Targets", path: "/targets" },
   { name: "Contact", path: "/contact" },
 ];
 
@@ -15,10 +15,12 @@ export default function Navbar() {
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   return (
-    <nav className="bg-white border-b shadow-sm">
+    <nav className="fixed top-0 left-0 w-full bg-white border-b shadow-sm z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="text-xl font-bold text-gray-800">MyApp</div>
+          <div className="text-xl font-bold text-gray-800">
+            Investment Dashboard
+          </div>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex space-x-6">

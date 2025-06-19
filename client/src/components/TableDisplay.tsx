@@ -44,16 +44,16 @@ export function TableDisplay({ data, columns }: TableDisplayProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {data.map((row, index) => (
             <TableRow
-              key={row.ticker_year}
+              key={index}
               className={`${styles.tableRow} ${styles.striped}`}
             >
               {columns.map((col) => {
                 const value = getValueByPath(row, col.field) ?? "n/a";
                 return (
                   <TableCell
-                    key={String(col.field)}
+                    key={`${col.field}-${index}`}
                     className={styles.tableCell}
                   >
                     <Tooltip title={String(value)} placement="top" arrow>
