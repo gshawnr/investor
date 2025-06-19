@@ -11,6 +11,8 @@ export const errorHandler = (
 
   const statusCode = (err as AppError).statusCode || 500;
   const status = (err as AppError).status || "error";
+  const msg = (err as AppError).message;
+  const userMsg = (err as any)._message;
 
   if (process.env.NODE_ENV === "dev") {
     res.status(statusCode).json({
@@ -23,7 +25,7 @@ export const errorHandler = (
     if ((err as AppError).isOperational) {
       res.status(statusCode).json({
         status,
-        message: err.message,
+        message: msg,
       });
     } else {
       res.status(500).json({

@@ -7,8 +7,19 @@ class TargetService {
     await TargetGeneratorService.createTargets();
   }
 
-  async getTargets({ filter = {}, options = {} }): Promise<ITarget[]> {
-    return Target.find(filter, null, options);
+  async getTargets({
+    filter = {},
+    options = {},
+  }): Promise<{ targets: ITarget[]; totalCount: number }> {
+    const [targets, totalCount] = await Promise.all([
+      Target.find(filter, null, options),
+      Target.countDocuments(filter),
+    ]);
+
+    return {
+      targets,
+      totalCount,
+    };
   }
 
   async deleteTargets(ticker_year?: string) {

@@ -1,3 +1,4 @@
+// These requirments define "good" companyies not "good" value.
 export const validTargetRequirements = {
   debtToEquity: { lte: 2 },
   excludedIndustries: ["gold", "asset management", "capital markets "],

@@ -33,7 +33,7 @@ const getProfile = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllProfiles = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {

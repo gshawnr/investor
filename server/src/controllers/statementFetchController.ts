@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import e, { Request, Response, NextFunction } from "express";
 import StatementFetchService from "../services/StatementFetchService";
 import ProfileService from "../services/ProfileService";
 
@@ -232,6 +232,82 @@ const updatePriceByTicker = async (
   }
 };
 
+const updateAllPrices = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { from, to } = req.query;
+
+    const currentYear = new Date().getFullYear();
+
+    // if from & to not provided, default to current year
+    const fromDate: string =
+      typeof from === "string" && from ? from : `${currentYear}-01-01`;
+
+    const toDate: string =
+      typeof to === "string" && to ? to : `${currentYear}-12-31`;
+
+    // Fetch all tickers from ProfileService in batches
+    const tickerArr = await ProfileService.getTickers();
+
+    // Immediately respond to client
+    res.status(202).json({
+      message:
+        "Request accepted. Prices will be fetched & updated in the background.",
+    });
+
+    let updatedCount: number = 0;
+    let errorCount: number = 0;
+    const errors: any[] = [];
+    // Continue processing in the background
+    await (async () => {
+      // Helper function for delay
+      const delay = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+
+      const BATCH_SIZE = 35;
+      for (let i = 0; i < tickerArr.length; i += BATCH_SIZE) {
+        const batch = tickerArr.slice(i, i + BATCH_SIZE);
+
+        // For each ticker in the batch, fetch the price data
+        for (let obj of batch) {
+          try {
+            const { ticker: t } = obj;
+
+            // defaults to the current year
+            await StatementFetchService.updatePriceByTicker({
+              ticker: t,
+              from: fromDate,
+              to: toDate,
+            });
+
+            updatedCount++;
+          } catch (err) {
+            let msg = (err as Error).message || "Unknown error";
+            errors.push({ ticker: obj.ticker, error: msg });
+            errorCount++;
+          }
+        }
+
+        // Add delay after each batch
+        await delay(30000); // delay for provider
+      }
+
+      // Optionally: store results/errors somewhere, or trigger a notification
+      // e.g., save to DB, send email, etc.
+    })();
+
+    console.log(`UpdateAllPrices: Update Count: ${updatedCount}.`);
+    console.log(`UpdateAllPrices: Error Count: ${errorCount}.`);
+    console.log(`UpdateAllPrices: Errors:.`, errors);
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   allStatementsFetch,
   balanceSheetFetch,
@@ -240,4 +316,5 @@ export default {
   profileFetch,
   priceFetchByTicker,
   updatePriceByTicker,
+  updateAllPrices,
 };
