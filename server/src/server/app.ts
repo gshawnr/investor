@@ -11,6 +11,7 @@ import summaryRoutes from "../routes/summaryRoutes";
 import metricRoutes from "../routes/metricRoutes";
 import tickerYearRoutes from "../routes/tickerYearRoutes";
 import targetRoutes from "../routes/targetRoutes";
+import favoriteRoutes from "../routes/favoriteRoutes";
 import userRoutes from "../routes/userRoutes";
 import { errorHandler } from "../middleware/errorHandler";
 import { AppError } from "../utils/AppError";
@@ -35,6 +36,7 @@ app.use("/api/metrics", metricRoutes);
 app.use("/api/targets", targetRoutes);
 app.use("/api/combined", tickerYearRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/favorites", favoriteRoutes);
 
 // Handle undefined routes
 app.use((req, res, next) => {

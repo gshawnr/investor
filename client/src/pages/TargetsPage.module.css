@@ -1,0 +1,9 @@
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.tableContainer {
+  max-width: 80vw;
+  max-height: 80vh;
+}

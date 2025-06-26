@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "../pages/Home";
-import CompanyData from "../pages/CompanyData";
-import TargetsTable from "./TargetsTable";
+
+import HomePage from "../pages/HomePage";
+import CompaniesPage from "../pages/CompaniesPage";
+import TargetsPage from "../pages/TargetsPage";
 import Navbar from "./Navbar";
 
 import styles from "./App.module.css";
@@ -12,9 +13,9 @@ function App() {
       <Navbar />
       <div className={styles.container}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/companies" element={<CompanyData />} />
-          <Route path="/targets" element={<TargetsTable />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/companies" element={<CompaniesPage />} />
+          <Route path="/targets" element={<TargetsPage />} />
         </Routes>
       </div>
     </Router>

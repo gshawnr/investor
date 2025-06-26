@@ -23,10 +23,6 @@ const userSchema = new Schema<IUserModel>(
     passwordHash: {
       type: String,
     },
-    favorites: {
-      type: [String],
-      default: [],
-    },
   },
   { timestamps: true }
 );

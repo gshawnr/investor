@@ -2,6 +2,7 @@
 
 .tableContainer {
   overflow-y: auto;
+  height: 465px;
 }
 
 .table {
@@ -15,6 +16,9 @@
 }
 
 .tableHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   height: 60px;
   background-color: darkslategrey;
 }
@@ -34,7 +38,7 @@
 }
 
 .tableCell {
-  width: 150px;
+  width: 180px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

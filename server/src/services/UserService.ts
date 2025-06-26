@@ -23,9 +23,13 @@ class UserService {
     return User.findOne({ email: email.toLowerCase() });
   }
 
+  async getUserById(id: string): Promise<IUser | null> {
+    return User.findById(id);
+  }
+
   async updateUser(
     email: string,
-    update: { password?: string; favorites?: string[] }
+    update: { password?: string }
   ): Promise<IUser | null> {
     const user = await User.findOne({ email: email.toLowerCase() });
 
@@ -36,9 +40,6 @@ class UserService {
       (user as any).password = update.password;
     }
 
-    if (update.favorites) {
-      user.favorites = update.favorites;
-    }
     return user.save();
   }
 

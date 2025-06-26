@@ -15,9 +15,14 @@ import styles from "./TableDisplay.module.css";
 interface TableDisplayProps {
   data: { ticker_year: string; [keyof: string]: any }[];
   columns: IColumn[];
+  handleSelect?: (row: any) => void;
 }
 
-export function TableDisplay({ data, columns }: TableDisplayProps) {
+export function TableDisplay({
+  data,
+  columns,
+  handleSelect,
+}: TableDisplayProps) {
   function getValueByPath(obj: any, path: string) {
     return path.split(".").reduce((acc, key) => {
       if (acc && typeof acc === "object" && key in acc) {
@@ -28,44 +33,45 @@ export function TableDisplay({ data, columns }: TableDisplayProps) {
   }
 
   return (
-    <TableContainer component={Paper} className={styles.tableContainer}>
-      <Table size="small" className={styles.table}>
-        <TableHead>
-          <TableRow className={styles.tableHeader}>
-            {columns.map((col) => (
-              <TableCell
-                key={col.field}
-                className={styles.tableCell}
-                sx={{ color: "white", fontSize: "16px", fontWeight: "800" }}
-              >
-                {col.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row, index) => (
-            <TableRow
-              key={index}
-              className={`${styles.tableRow} ${styles.striped}`}
+    // <TableContainer component={Paper} className={styles.tableContainer}>
+    <Table size="small" className={styles.table}>
+      <TableHead>
+        <TableRow className={styles.tableHeader}>
+          {columns.map((col) => (
+            <TableCell
+              key={col.field}
+              className={styles.tableCell}
+              sx={{ color: "white", fontSize: "16px", fontWeight: "800" }}
             >
-              {columns.map((col) => {
-                const value = getValueByPath(row, col.field) ?? "n/a";
-                return (
-                  <TableCell
-                    key={`${col.field}-${index}`}
-                    className={styles.tableCell}
-                  >
-                    <Tooltip title={String(value)} placement="top" arrow>
-                      <span className={styles.cellContent}>{value}</span>
-                    </Tooltip>
-                  </TableCell>
-                );
-              })}
-            </TableRow>
+              {col.label}
+            </TableCell>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((row, index) => (
+          <TableRow
+            key={index}
+            className={`${styles.tableRow} ${styles.striped}`}
+            onClick={() => handleSelect && handleSelect(row)}
+          >
+            {columns.map((col) => {
+              const value = getValueByPath(row, col.field) ?? "n/a";
+              return (
+                <TableCell
+                  key={`${col.field}-${index}`}
+                  className={styles.tableCell}
+                >
+                  <Tooltip title={String(value)} placement="top" arrow>
+                    <span className={styles.cellContent}>{value}</span>
+                  </Tooltip>
+                </TableCell>
+              );
+            })}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+    // </TableContainer>
   );
 }

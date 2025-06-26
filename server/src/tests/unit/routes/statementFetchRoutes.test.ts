@@ -11,17 +11,20 @@ jest.mock("../../../controllers/statementFetchController", () => ({
   incomeFetch: jest.fn((req, res) =>
     res.status(200).json({ message: "income fetched" })
   ),
-  cashflowFetch: jest.fn((req, res) =>
-    res.status(200).json({ message: "cashflow fetched" })
-  ),
-  profileFetch: jest.fn((req, res) =>
-    res.status(200).json({ message: "profile fetched" })
+  updateAllPrices: jest.fn((req, res) =>
+    res.status(200).json({ message: "prices fetched" })
   ),
   priceFetchByTicker: jest.fn((req, res) =>
     res.status(200).json({ message: "prices fetched" })
   ),
   updatePriceByTicker: jest.fn((req, res) =>
     res.status(200).json({ message: "prices fetched" })
+  ),
+  cashflowFetch: jest.fn((req, res) =>
+    res.status(200).json({ message: "cashflow fetched" })
+  ),
+  profileFetch: jest.fn((req, res) =>
+    res.status(200).json({ message: "profile fetched" })
   ),
   allStatementsFetch: jest.fn((req, res) =>
     res.status(200).json({ message: "all statements fetched" })

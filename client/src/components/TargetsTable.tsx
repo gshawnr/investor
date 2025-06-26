@@ -76,24 +76,24 @@ export default function TargetsTable() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.tables}>
+      <div className={styles.tableAndSearchContainer}>
         <div className={styles.searchContainer}>
           <SearchBar onSearch={validateAndSetSearch} />
         </div>
 
-        <div className={styles.top_table}>
+        <div className={styles.tableContainer}>
           <TableDisplay data={targets} columns={targetColumns} />
         </div>
-      </div>
 
-      <TablePagination
-        component="div"
-        count={count}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+        <TablePagination
+          component="div"
+          count={count}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </div>
     </div>
   );
 }

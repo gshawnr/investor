@@ -1,0 +1,22 @@
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: lightgrey;
+  /* boxShadow: 24;
+          p: 4;
+          borderRadius: 2; */
+  min-width: 340;
+}
+
+.errorText {
+  color: red;
+  font-size: 0.875rem; /* 14px */
+}
+
+.btnBox {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem; /* 16px */
+}

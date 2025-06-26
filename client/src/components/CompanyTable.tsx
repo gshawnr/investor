@@ -75,21 +75,24 @@ export default function CompanyTable() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.searchContainer}>
-        <SearchBar onSearch={validateAndSetSearch} />
-      </div>
-      <div className={styles.table}>
-        <TableDisplay data={companies} columns={companyColumns} />
-      </div>
+      <div className={styles.tableAndSearchContainer}>
+        <div className={styles.searchContainer}>
+          <SearchBar onSearch={validateAndSetSearch} />
+        </div>
 
-      <TablePagination
-        component="div"
-        count={count}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+        <div className={styles.tableContainer}>
+          <TableDisplay data={companies} columns={companyColumns} />
+        </div>
+
+        <TablePagination
+          component="div"
+          count={count}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </div>
     </div>
   );
 }
