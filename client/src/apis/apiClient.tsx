@@ -4,7 +4,7 @@ export async function apiClient<T>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("inv_token");
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",

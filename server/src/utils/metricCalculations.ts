@@ -47,9 +47,7 @@ export const getDcfValuePerShare = (
   const terminalValue = terminalFCF / (WACC - terminalGrowthRate);
   const presentValue = terminalValue / Math.pow(1 + WACC_PLUS, n);
 
-  // Using Gordon Grow Model theory - NOT CURRENTLY USED
-  const terminalValueGordon =
-    (FCF * (1 + terminalGrowthRate)) / (WACC - terminalGrowthRate);
+  // TODO convert to USD
 
   return avgSharesOutstanding > 0 ? presentValue / avgSharesOutstanding : 0;
 };
@@ -59,6 +57,8 @@ export const getPriceToEarnings = (data: any): number | null => {
   if (netIncome <= 0) {
     return null;
   }
+
+  // TODO convert to USD
   return avgStockPrice / (netIncome / avgSharesOutstanding);
 };
 
@@ -68,6 +68,7 @@ export const getPriceToSales = (data: any): number | null => {
     return null;
   }
 
+  // TODO convert to USD
   return avgStockPrice / (revenue / avgSharesOutstanding);
 };
 
@@ -77,6 +78,7 @@ export const getPriceToBook = (data: any): number | null => {
     return null;
   }
 
+  // TODO convert to USD
   return avgStockPrice / (equity / avgSharesOutstanding);
 };
 

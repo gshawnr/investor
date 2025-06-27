@@ -38,6 +38,7 @@ class TargetGeneratorService {
         try {
           const { ticker: t } = profile;
 
+          // USD Price
           const price = await this.getPrices(t);
           if (!price) {
             console.warn(`No price data found for ticker "${t}". Skipping.`);

@@ -7,10 +7,12 @@ import { TableDisplay } from "./TableDisplay";
 import { Button } from "@mui/material";
 import AddFavoritesModal from "./AddFavoriteModal";
 import EditFavoritesModal from "./EditFavoriteModal";
+import { useAuth } from "../contexts/AuthContext";
 
 import styles from "./FavoritesTable.module.css";
 
 export default function FavoritesTable() {
+  const { user } = useAuth();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
@@ -35,7 +37,8 @@ export default function FavoritesTable() {
 
   useEffect(() => {
     try {
-      const userId = "685a09dec5566439207cbd79";
+      const userId = user?.userId || "";
+
       const fetchData = async () => {
         // page incremented to satisfy MUI and Backend structures
         const url = `${

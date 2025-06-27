@@ -13,6 +13,7 @@ export const getBalanceSheets = async (params: any): Promise<any> => {
 
   console.log("fetching balance sheets", fetch);
   const response = await apiClient.get(fetch);
+  console.log("response from balance sheets", response.data);
   return response.data;
 };
 

@@ -52,6 +52,15 @@ class UserService {
     if (!user) return false;
     return user.comparePassword(password);
   }
+
+  async comparePassword(
+    email: string,
+    candidatePassword: string
+  ): Promise<boolean> {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user || !user.passwordHash) return false;
+    return await user.comparePassword(candidatePassword);
+  }
 }
 
 export default new UserService();

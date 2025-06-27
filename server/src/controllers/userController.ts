@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 import UserService from "../services/UserService";
+
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -89,9 +92,43 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const login = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      res.status(400).json({ message: "Email and password are required." });
+      return;
+    }
+
+    const user = await UserService.getUserByEmail(email);
+    if (!user) {
+      res.status(401).json({ message: "Invalid credentials." });
+      return;
+    }
+
+    const isMatch = await UserService.comparePassword(email, password);
+    if (!isMatch) {
+      res.status(401).json({ message: "Invalid credentials." });
+      return;
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.status(200).json({ token, userId: user._id });
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   createUser,
   getUserByEmail,
   updateUser,
   deleteUser,
+  login,
 };

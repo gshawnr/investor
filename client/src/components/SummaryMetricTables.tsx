@@ -7,8 +7,6 @@ import {
 } from "../constants/tableColumns/summaryMetricTableColumns";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
-import { Button } from "@mui/material";
-import FavoritesModal from "./FavoritesModal";
 
 import styles from "./SummaryMetricTables.module.css";
 
@@ -20,7 +18,7 @@ export default function SummaryMetricTables() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [metrics, setMetrics] = useState([]);
   const [summaries, setSummaries] = useState([]);
-  const [openFavoritesModal, setFavoritesModal] = useState(false);
+  // const [openFavoritesModal, setFavoritesModal] = useState(false);
   const [error, setError] = useState({});
 
   const SEARCH_FIELDS = "ticker,ticker_year,industry,sector";

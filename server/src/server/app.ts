@@ -15,6 +15,7 @@ import favoriteRoutes from "../routes/favoriteRoutes";
 import userRoutes from "../routes/userRoutes";
 import { errorHandler } from "../middleware/errorHandler";
 import { AppError } from "../utils/AppError";
+import { authenticateJWT } from "../middleware/authMiddleware";
 
 const app = express();
 
@@ -23,7 +24,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// routes
+// Public routes
+app.use("/api/users", userRoutes);
+
+app.use(authenticateJWT);
+
+// Protected routes
 app.use("/api/balance-sheets", balanceSheetRoutes);
 app.use("/api/cashflows", cashflowRoutes);
 app.use("/api/profiles", profileRoutes);
@@ -35,7 +41,6 @@ app.use("/api/summaries", summaryRoutes);
 app.use("/api/metrics", metricRoutes);
 app.use("/api/targets", targetRoutes);
 app.use("/api/combined", tickerYearRoutes);
-app.use("/api/users", userRoutes);
 app.use("/api/favorites", favoriteRoutes);
 
 // Handle undefined routes

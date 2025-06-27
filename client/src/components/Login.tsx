@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
+import { apiClient } from "../apis/apiClient"; // Adjust the import path as necessary
 
 import styles from "./Login.module.css";
 
@@ -12,7 +13,7 @@ const Login: React.FC = () => {
 
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     if (!email || !password) {
@@ -20,9 +21,21 @@ const Login: React.FC = () => {
       return;
     }
 
-    // Add your auth logic here
-    // TODO
-    login(email, "token1234");
+    const url = `${import.meta.env.VITE_BASE_URL}/users/login`;
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    };
+
+    const { token, userId }: any = await apiClient(url, options);
+
+    if (!token) {
+      setError("Login failed. Please check your credentials.");
+      return;
+    }
+
+    login({ username: email, token, userId });
   };
 
   return (

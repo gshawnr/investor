@@ -3,13 +3,12 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 type User = {
   username: string;
-  token: string;
   userId: string;
 };
 
 type AuthContextType = {
   user: User | null;
-  login: (username: string, token: string) => void;
+  login: (params: { username: string; token: string; userId: string }) => void;
   logout: () => void;
   isAuthenticated: boolean;
 };
@@ -19,9 +18,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (username: string, token: string) => {
-    setUser({ username, token, userId: "685a09dec5566439207cbd79" });
-    localStorage.setItem("auth", JSON.stringify({ username, token }));
+  const login = ({
+    username,
+    token,
+    userId,
+  }: {
+    username: string;
+    token: string;
+    userId: string;
+  }) => {
+    setUser({ username, userId });
+    localStorage.setItem("inv_token", token);
   };
 
   const logout = () => {

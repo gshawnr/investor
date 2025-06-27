@@ -5,6 +5,7 @@ export const summaryColumns: IColumn[] = [
   { field: "ticker_year", label: "Ticker_Year" },
   { field: "fiscalYear", label: "Year" },
   { field: "industry", label: "Industry" },
+  { field: "sector", label: "Sector" },
   { field: "beta", label: "Beta" },
   { field: "currency", label: "Currency" },
   { field: "assets", label: "Assets" },
