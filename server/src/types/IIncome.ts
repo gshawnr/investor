@@ -22,5 +22,6 @@ export interface IIncomeRaw {
   operatingExpenses: number;
   operatingIncome: number;
   revenue: number;
+  reportedCurrency: string;
   [key: string]: any; // Allows for additional properties
 }

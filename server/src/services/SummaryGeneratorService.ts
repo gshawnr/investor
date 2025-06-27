@@ -1,8 +1,5 @@
 // services/SummaryGeneratorService.ts
 import { FilterQuery } from "mongoose";
-import BalanceSheet from "../models/BalanceSheet";
-import CashFlow from "../models/Cashflow";
-import IncomeStatement from "../models/Income";
 import Profile from "../models/Profile";
 import Summary from "../models/Summary";
 import { IBalanceSheet, IBalanceSheetRaw } from "../types/IBalanceSheet";
@@ -11,6 +8,8 @@ import { IIncome, IIncomeRaw } from "../types/IIncome";
 import { IPrice } from "../types/IPrice";
 import { IProfile } from "../types/IProfile";
 import { ISummary } from "../types/ISummary";
+import { getDocsByYearsForTicker } from "../utils/metricAndSummaryfuncs";
+import ExchangeRateService from "./ExchangeRateService";
 import PriceService from "./PriceService";
 import TickerYearService from "./TickerYearService";
 
@@ -22,6 +21,11 @@ class SummaryGeneratorService {
         `Found ${profiles.length} profiles${
           ticker ? ` for ticker "${ticker}"` : ""
         }.`
+      );
+
+      const exchangeRates = await ExchangeRateService.getExchangeRates({});
+      const exchangeRateMap = new Map(
+        exchangeRates.map((er) => [er.currency_year, er])
       );
 
       let totalSummariesCreated = 0;
@@ -36,7 +40,11 @@ class SummaryGeneratorService {
           continue;
         }
 
-        const docSetsByYear = await this.getDocsByYearsForTicker(t, year);
+        const docSetsByYear = await getDocsByYearsForTicker(
+          t,
+          year,
+          exchangeRateMap
+        );
 
         console.log(
           `Ticker "${t}" - processing ${docSetsByYear.length} document sets.`
@@ -82,43 +90,6 @@ class SummaryGeneratorService {
 
   private async getPrices(ticker: string): Promise<IPrice | null> {
     return await PriceService.getPriceByTicker(ticker.toLowerCase());
-  }
-
-  // TODO if this is the same function for MetricsGeneratorService, consider refactoring to a shared utility
-  private async getDocsByYearsForTicker(
-    ticker: string,
-    year?: string
-  ): Promise<[IIncome, IBalanceSheet, ICashflow][]> {
-    const filter: FilterQuery<IProfile> = year
-      ? { ticker_year: `${ticker}_${year}` }
-      : { ticker };
-
-    const [inc, bal, cash] = await Promise.all([
-      IncomeStatement.find(filter),
-      BalanceSheet.find(filter),
-      CashFlow.find(filter),
-    ]);
-
-    const balMap = new Map(bal.map((b) => [b.ticker_year, b]));
-    const cashMap = new Map(cash.map((c) => [c.ticker_year, c]));
-
-    const filtered = inc
-      .map<[IIncome, IBalanceSheet, ICashflow] | null>((i) => {
-        const ticker_year = i.ticker_year;
-        const foundBal = balMap.get(ticker_year);
-        const foundCash = cashMap.get(ticker_year);
-
-        if (foundBal && foundCash) {
-          return [i, foundBal, foundCash];
-        }
-
-        return null;
-      })
-      .filter(
-        (set): set is [IIncome, IBalanceSheet, ICashflow] => set !== null
-      );
-
-    return filtered;
   }
 
   private async createSummary(

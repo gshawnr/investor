@@ -2,8 +2,10 @@ import { IIncomeRaw } from "../types/IIncome";
 import { IBalanceSheetRaw } from "../types/IBalanceSheet";
 import { ICashflowRaw } from "../types/ICashflow";
 import { IProfile } from "../types/IProfile";
+import ExchangeRateService from "../services/ExchangeRateService";
 
 import { ICalculationContants } from "../types/ICalculationConstants";
+import { IExchangeRate } from "../types/IExchangeRate";
 
 export const getDcfValuePerShare = (
   data: any,
@@ -20,11 +22,12 @@ export const getDcfValuePerShare = (
     totalDebt,
     equity,
     avgSharesOutstanding,
+    rateToUSD,
   } = data;
 
   // Calculate free cash flow
   const CFO = netIncome + depreciationAndAmortization;
-  const FCF = CFO - capEx;
+  const FCF = CFO + capEx; // added as capEx is usually reported as a negative value in cash flow statements
 
   // Calculate discount rate
   // const equity = avgSharesOutstanding * avgStockPrice;
@@ -47,39 +50,40 @@ export const getDcfValuePerShare = (
   const terminalValue = terminalFCF / (WACC - terminalGrowthRate);
   const presentValue = terminalValue / Math.pow(1 + WACC_PLUS, n);
 
-  // TODO convert to USD
-
-  return avgSharesOutstanding > 0 ? presentValue / avgSharesOutstanding : 0;
+  const presentValueInUSD = presentValue * rateToUSD;
+  return avgSharesOutstanding > 0
+    ? presentValueInUSD / avgSharesOutstanding
+    : 0;
 };
 
 export const getPriceToEarnings = (data: any): number | null => {
-  const { netIncome, avgStockPrice, avgSharesOutstanding } = data;
+  const { netIncome, avgStockPrice, avgSharesOutstanding, rateToUSD } = data;
   if (netIncome <= 0) {
     return null;
   }
 
-  // TODO convert to USD
-  return avgStockPrice / (netIncome / avgSharesOutstanding);
+  const netIncomeInUSD = netIncome * rateToUSD;
+  return avgStockPrice / (netIncomeInUSD / avgSharesOutstanding);
 };
 
 export const getPriceToSales = (data: any): number | null => {
-  const { revenue, avgStockPrice, avgSharesOutstanding } = data;
+  const { revenue, avgStockPrice, avgSharesOutstanding, rateToUSD } = data;
   if (revenue <= 0 || avgSharesOutstanding <= 0) {
     return null;
   }
 
-  // TODO convert to USD
-  return avgStockPrice / (revenue / avgSharesOutstanding);
+  const revenueInUSD = revenue * rateToUSD;
+  return avgStockPrice / (revenueInUSD / avgSharesOutstanding);
 };
 
 export const getPriceToBook = (data: any): number | null => {
-  const { equity, avgStockPrice, avgSharesOutstanding } = data;
+  const { equity, avgStockPrice, avgSharesOutstanding, rateToUSD } = data;
   if (equity <= 0) {
     return null;
   }
 
-  // TODO convert to USD
-  return avgStockPrice / (equity / avgSharesOutstanding);
+  const equityInUSD = equity * rateToUSD;
+  return avgStockPrice / (equityInUSD / avgSharesOutstanding);
 };
 
 export const getReturnOnEquity = (data: any): number => {
@@ -215,7 +219,8 @@ export function getValueData(
   profile: IProfile,
   cashflowRaw: ICashflowRaw,
   balsheetRaw: IBalanceSheetRaw,
-  calculationConstants: ICalculationContants
+  calculationConstants: ICalculationContants,
+  exchangeRateMap: Map<string, IExchangeRate>
 ): {
   dcfToAvgPrice: number;
   dcfValuePerShare: number;
@@ -228,11 +233,21 @@ export function getValueData(
     revenue,
     netIncome,
     weightedAverageShsOut: avgSharesOutstanding,
+    fiscalYear,
+    reportedCurrency,
   } = incomeRaw;
   const { beta } = profile;
   const { longTermDebt, totalDebt, totalEquity: equity } = balsheetRaw;
   const { capitalExpenditure: capEx, depreciationAndAmortization } =
     cashflowRaw;
+
+  const exchangeRate = exchangeRateMap.get(`${reportedCurrency}_${fiscalYear}`);
+  if (!exchangeRate) {
+    throw new Error(
+      `No exchange rates found for ${reportedCurrency} in year ${fiscalYear}`
+    );
+  }
+  const { rateToUSD } = exchangeRate;
 
   const dcfValuePerShare = getDcfValuePerShare(
     {
@@ -245,6 +260,7 @@ export function getValueData(
       totalDebt,
       avgSharesOutstanding,
       avgStockPrice: avgPriceByYear,
+      rateToUSD,
     },
     calculationConstants
   );
@@ -255,6 +271,7 @@ export function getValueData(
     netIncome,
     avgStockPrice: avgPriceByYear,
     avgSharesOutstanding,
+    rateToUSD,
   });
 
   const earningsYield = priceToEarnings ? 1 / priceToEarnings : null;
@@ -263,12 +280,14 @@ export function getValueData(
     revenue,
     avgStockPrice: avgPriceByYear,
     avgSharesOutstanding,
+    rateToUSD,
   });
 
   const priceToBook = getPriceToBook({
     equity,
     avgStockPrice: avgPriceByYear,
     avgSharesOutstanding,
+    rateToUSD,
   });
 
   return {

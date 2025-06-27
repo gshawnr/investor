@@ -45,8 +45,11 @@ class TargetGeneratorService {
             continue;
           }
 
-          const { docs: validTargetSetByYear, multiplier } =
-            await this.getDocsByTicker(t);
+          const {
+            docs: validTargetSetByYear,
+            multiplier,
+            latestFiscalYear,
+          } = await this.getDocsByTicker(t);
 
           let createdForTicker = 0;
 
@@ -56,7 +59,8 @@ class TargetGeneratorService {
               profile,
               price,
               calculationConstants,
-              multiplier
+              multiplier,
+              latestFiscalYear
             );
 
             if (targetCreated) {
@@ -92,9 +96,11 @@ class TargetGeneratorService {
     return await CalculationConstantsService.getCalculationConstants(year);
   }
 
-  private async getDocsByTicker(
-    ticker: string
-  ): Promise<{ docs: [IMetric, ISummary][]; multiplier: number }> {
+  private async getDocsByTicker(ticker: string): Promise<{
+    docs: [IMetric, ISummary][];
+    multiplier: number;
+    latestFiscalYear: string | undefined;
+  }> {
     const filter = { ticker };
     const options = { sort: { fiscalYear: -1 }, limit: 5 };
 
@@ -103,9 +109,11 @@ class TargetGeneratorService {
       SummaryService.getSummaries({ filter, options }),
     ]);
 
+    const { fiscalYear: latestFiscalYear } = metrics[0] || {};
+
     const validTarget = this.isValidTarget(metrics);
     if (!validTarget) {
-      return { docs: [], multiplier: 0 };
+      return { docs: [], multiplier: 0, latestFiscalYear };
     }
 
     const ticketMultiplier = this.generateTickerMultiplier(metrics);
@@ -125,7 +133,7 @@ class TargetGeneratorService {
       })
       .filter((set): set is [IMetric, ISummary] => set !== null);
 
-    return { docs: filtered, multiplier: ticketMultiplier };
+    return { docs: filtered, multiplier: ticketMultiplier, latestFiscalYear };
   }
 
   private async createTarget(
@@ -133,7 +141,8 @@ class TargetGeneratorService {
     profile: IProfile,
     price: IPrice,
     calculationConstants: ICalculationContants,
-    multiplier: number
+    multiplier: number,
+    latestFiscalYear: string | undefined
   ): Promise<boolean> {
     const [metric, summary] = docArr;
 
@@ -142,7 +151,8 @@ class TargetGeneratorService {
     // metric data
     const { ticker_year, valueData, ticker, fiscalYear } = metric;
     const { dcfValuePerShare } = valueData;
-    const targetPrice = dcfValuePerShare / multiplier;
+    const targetPrice =
+      dcfValuePerShare > 0 ? dcfValuePerShare / multiplier : 0;
 
     // summary data
     const { currency } = summary;
@@ -151,7 +161,13 @@ class TargetGeneratorService {
     const { exchange } = profile;
 
     // price data
-    const marketPrice = price.averagePrices[fiscalYear];
+    let marketPrice: Number;
+    if (latestFiscalYear && fiscalYear === latestFiscalYear) {
+      marketPrice = price.price;
+    } else {
+      marketPrice = price.averagePrices[fiscalYear];
+    }
+
     if (!marketPrice) {
       throw new Error(`average market price not found for: ${ticker_year} `);
     }
@@ -166,9 +182,9 @@ class TargetGeneratorService {
     }
 
     const { rateToUSD } = exchangeRate[0];
-    const dcfValueUSD = formatDecimals(dcfValuePerShare * rateToUSD, 2);
+    const dcfValueUSD = formatDecimals(dcfValuePerShare, 2);
     const marketPriceUSD = formatDecimals(marketPrice, 2);
-    const targetPriceUSD = formatDecimals(targetPrice * rateToUSD, 2);
+    const targetPriceUSD = formatDecimals(targetPrice, 2);
 
     // Upsert operation
     const res = await Target.updateOne(
@@ -260,7 +276,7 @@ class TargetGeneratorService {
     const { sum, count } = metrics.reduce(
       (acc, item) => {
         const value = item.valueData.dcfToAvgPrice;
-        if (value != null) {
+        if (value != null && value >= 0) {
           acc.sum += value;
           acc.count += 1;
         }
