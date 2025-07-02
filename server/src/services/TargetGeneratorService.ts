@@ -161,7 +161,7 @@ class TargetGeneratorService {
     const { exchange } = profile;
 
     // price data
-    let marketPrice: Number;
+    let marketPrice: number;
     if (latestFiscalYear && fiscalYear === latestFiscalYear) {
       marketPrice = price.price;
     } else {
