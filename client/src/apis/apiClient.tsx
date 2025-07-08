@@ -1,4 +1,4 @@
-// utils/apiClient.ts
+import ApiError from "../utils/ApiError";
 
 export async function apiClient<T>(
   url: string,
@@ -21,8 +21,8 @@ export async function apiClient<T>(
   if (response?.status === 204) return null as any;
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "An API error occurred");
+    const { status, statusText } = response;
+    throw new ApiError(statusText, status);
   }
 
   return response.json();

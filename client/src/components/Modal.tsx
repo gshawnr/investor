@@ -2,18 +2,16 @@ import { Modal as MuiModal } from "@mui/material";
 
 interface ModalProps {
   open: boolean;
-  handleOpen: (open: boolean) => void;
+  handleClose: (close: boolean) => void;
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ open, handleOpen, children }) => {
-  const handleClose = () => handleOpen(false);
-
+const Modal: React.FC<ModalProps> = ({ open, handleClose, children }) => {
   return (
     <div>
       <MuiModal
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose(true)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >

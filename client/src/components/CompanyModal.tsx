@@ -5,21 +5,21 @@ import styles from "./CompanyModal.module.css";
 
 interface CompanyModalProps {
   open: boolean;
-  handleOpen: (open: boolean) => void;
+  handleClose: (open: boolean) => void;
   company: any;
 }
 
 const CompanyModal: React.FC<CompanyModalProps> = ({
   company,
   open,
-  handleOpen,
+  handleClose,
 }) => {
   if (!company) {
     return null;
   }
 
   return (
-    <Modal open={open} handleOpen={handleOpen}>
+    <Modal open={open} handleClose={handleClose}>
       <div className={styles.container}>
         <p className={styles.title}>{company.companyName}</p>
         <div className={styles.infoContainer}>

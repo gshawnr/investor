@@ -115,14 +115,14 @@ export default function FavoritesTable() {
       <div className={styles.container}>
         <AddFavoritesModal
           open={openAddFavoritesModal}
-          handleOpen={setAddFavoritesModal}
+          handleClose={() => setAddFavoritesModal(false)}
           handleAdd={handleAddFavorites}
         />
 
         <EditFavoritesModal
           initialData={selectedFavorite}
           open={openEditFavoritesModal}
-          handleOpen={setEditFavoritesModal}
+          handleClose={() => setEditFavoritesModal(false)}
           handleEdit={handleEditFavorites}
           handleDelete={handleDeleteFavorite}
         />
@@ -180,14 +180,14 @@ export default function FavoritesTable() {
     <div className={styles.container}>
       <AddFavoritesModal
         open={openAddFavoritesModal}
-        handleOpen={setAddFavoritesModal}
+        handleClose={() => setAddFavoritesModal(false)}
         handleAdd={handleAddFavorites}
       />
 
       <EditFavoritesModal
         initialData={selectedFavorite}
         open={openEditFavoritesModal}
-        handleOpen={setEditFavoritesModal}
+        handleClose={() => setEditFavoritesModal(false)}
         handleEdit={handleEditFavorites}
         handleDelete={handleDeleteFavorite}
       />

@@ -81,12 +81,17 @@ export default function CompanyTable() {
     setSelected(company);
   };
 
+  const handleModalClose = () => {
+    setCompanySelected(false);
+    setSelected(null);
+  };
+
   return (
     <div className={styles.container}>
       <CompanyModal
-        company={selected}
         open={companySelected}
-        handleOpen={setCompanySelected}
+        handleClose={handleModalClose}
+        company={selected}
       />
 
       <div className={styles.tableAndSearchContainer}>

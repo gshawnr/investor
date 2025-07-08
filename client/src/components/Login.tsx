@@ -2,40 +2,48 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { apiClient } from "../apis/apiClient"; // Adjust the import path as necessary
+import { useError } from "../contexts/ErrorContext";
 
 import styles from "./Login.module.css";
+import ApiError from "../utils/ApiError";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [localError, setLocalError] = useState("");
+  const { error, clearError, setError } = useError();
 
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    if (!email || !password) {
-      setError("Please enter both email and password.");
-      return;
+    try {
+      e.preventDefault();
+      setLocalError("");
+      if (!email || !password) {
+        setLocalError("Please enter both email and password.");
+        return;
+      }
+
+      const url = `${import.meta.env.VITE_BASE_URL}/users/login`;
+
+      const options = {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      };
+
+      const { token, userId }: any = await apiClient(url, options);
+
+      login({ username: email, token, userId });
+    } catch (err) {
+      const message = (err as Error).message || "unknown error";
+      if (err instanceof ApiError) {
+        const { status = 500 } = err;
+        setError({ message, statusCode: status, source: "Login" });
+      } else {
+        setError({ message, source: "Login" });
+      }
     }
-
-    const url = `${import.meta.env.VITE_BASE_URL}/users/login`;
-
-    const options = {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    };
-
-    const { token, userId }: any = await apiClient(url, options);
-
-    if (!token) {
-      setError("Login failed. Please check your credentials.");
-      return;
-    }
-
-    login({ username: email, token, userId });
   };
 
   return (
@@ -78,7 +86,9 @@ const Login: React.FC = () => {
           </label>
 
           <div className={styles.errorPlaceholder}>
-            <span className={styles.error}>{error ? error : "\u00A0"}</span>
+            <span className={styles.error}>
+              {localError ? localError : "\u00A0"}
+            </span>
           </div>
 
           <button type="submit" className={styles.submitButton}>

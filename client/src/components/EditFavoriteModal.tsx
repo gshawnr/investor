@@ -14,7 +14,7 @@ interface EditFavoriteModalProps {
     targetSalesPriceUSD: number | string;
   };
   open: boolean;
-  handleOpen: (open: boolean) => void;
+  handleClose: (close: boolean) => void;
   handleEdit: (input: any) => void;
   handleDelete: (ticker: string) => void;
 }
@@ -27,7 +27,7 @@ const RESET_STATE = {
 
 export default function EditFavoriteModal({
   open,
-  handleOpen,
+  handleClose,
   handleEdit,
   handleDelete,
   initialData,
@@ -95,7 +95,7 @@ export default function EditFavoriteModal({
       });
 
       handleEdit([data]);
-      handleOpen(false);
+      handleClose(true);
     } catch (err: any) {
       setApiError(err?.message || "Submission failed.");
     } finally {
@@ -125,7 +125,7 @@ export default function EditFavoriteModal({
       });
 
       handleDelete(ticker);
-      handleOpen(false);
+      handleClose(true);
     } catch (err: any) {
       setApiError(err?.message || "Submission failed.");
     } finally {
@@ -134,11 +134,11 @@ export default function EditFavoriteModal({
   };
 
   const onCancel = () => {
-    handleOpen(false);
+    handleClose(true);
   };
 
   return (
-    <FavoritesModal open={open} handleOpen={handleOpen}>
+    <FavoritesModal open={open} handleClose={handleClose}>
       <div className={styles.container}>
         <h2>Edit Favorite</h2>
 

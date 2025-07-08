@@ -9,7 +9,7 @@ import FavoritesModal from "./FavoritesModal";
 
 interface AddFavoriteModalProps {
   open: boolean;
-  handleOpen: (open: boolean) => void;
+  handleClose: (close: boolean) => void;
   handleAdd: (input: any) => void | undefined;
 }
 
@@ -21,7 +21,8 @@ const initialState = {
 
 export default function AddFavoriteModal({
   open,
-  handleOpen,
+  // handleOpen,
+  handleClose,
   handleAdd,
 }: AddFavoriteModalProps) {
   const { user } = useAuth();
@@ -77,7 +78,8 @@ export default function AddFavoriteModal({
 
       setForm(initialState);
       handleAdd([data]);
-      handleOpen(false);
+      // handleOpen(false);
+      handleClose(true);
     } catch (err: any) {
       setApiError(err?.message || "Submission failed.");
     } finally {
@@ -86,7 +88,7 @@ export default function AddFavoriteModal({
   };
 
   return (
-    <FavoritesModal open={open} handleOpen={handleOpen}>
+    <FavoritesModal open={open} handleClose={handleClose}>
       <div className={styles.container}>
         <h2>Add Favorite</h2>
 
@@ -130,7 +132,7 @@ export default function AddFavoriteModal({
           />
           {apiError && <h5 className={styles.errorText}>{apiError}</h5>}
           <div className={styles.btnBox}>
-            <Button onClick={() => handleOpen(false)} disabled={submitting}>
+            <Button onClick={() => handleClose(true)} disabled={submitting}>
               Cancel
             </Button>
 
