@@ -21,11 +21,8 @@ export async function apiClient<T>(
   if (response?.status === 204) return null as any;
 
   if (!response.ok) {
-    console.log("res", response);
-    const errorText = await response.text();
-    throw new Error(
-      `HTTP ${response.status}: ${response.statusText} - ${errorText}`
-    );
+    const errorData = await response.json();
+    throw new Error(errorData.message || "An API error occurred");
   }
 
   return response.json();

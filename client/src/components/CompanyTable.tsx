@@ -4,6 +4,7 @@ import { apiClient } from "../apis/apiClient";
 import { companyColumns } from "../constants/tableColumns/companyTableColumns";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
+import CompanyModal from "./CompanyModal";
 
 import styles from "./CompanyTable.module.css";
 
@@ -15,6 +16,8 @@ export default function CompanyTable() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [companies, setCompanies] = useState([]);
   const [error, setError] = useState({});
+  const [companySelected, setCompanySelected] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   const SEARCH_FIELDS = "ticker,companyName,industry,sector";
 
@@ -73,15 +76,30 @@ export default function CompanyTable() {
     setSearch(value);
   };
 
+  const handleCompanySelect = (company: any) => {
+    setCompanySelected(true);
+    setSelected(company);
+  };
+
   return (
     <div className={styles.container}>
+      <CompanyModal
+        company={selected}
+        open={companySelected}
+        handleOpen={setCompanySelected}
+      />
+
       <div className={styles.tableAndSearchContainer}>
         <div className={styles.searchContainer}>
           <SearchBar onSearch={validateAndSetSearch} />
         </div>
 
         <div className={styles.tableContainer}>
-          <TableDisplay data={companies} columns={companyColumns} />
+          <TableDisplay
+            data={companies}
+            columns={companyColumns}
+            handleSelect={handleCompanySelect}
+          />
         </div>
 
         <TablePagination
