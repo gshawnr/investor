@@ -1,10 +1,13 @@
 import { TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
+
 import { apiClient } from "../apis/apiClient";
 import {
   metricColumns,
   summaryColumns,
 } from "../constants/tableColumns/summaryMetricTableColumns";
+import { useError } from "../contexts/ErrorContext";
+import ApiError from "../utils/ApiError";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
 
@@ -18,8 +21,7 @@ export default function SummaryMetricTables() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [metrics, setMetrics] = useState([]);
   const [summaries, setSummaries] = useState([]);
-  // const [openFavoritesModal, setFavoritesModal] = useState(false);
-  const [error, setError] = useState({});
+  const { setError } = useError();
 
   const SEARCH_FIELDS = "ticker,ticker_year,industry,sector";
 
@@ -33,8 +35,8 @@ export default function SummaryMetricTables() {
   }, [search]);
 
   useEffect(() => {
-    try {
-      const fetchData = async () => {
+    const fetchData = async () => {
+      try {
         // page incremented to satisfy MUI and Backend structures
         const url = `${
           import.meta.env.VITE_BASE_URL
@@ -48,13 +50,21 @@ export default function SummaryMetricTables() {
         setMetrics(metrics);
         setSummaries(summaries);
         setCount(totalCount);
-      };
-      fetchData();
-    } catch (err) {
-      console.log(err);
-      setError(err as Error);
-    }
-  }, [page, rowsPerPage, debouncedSearch, error]);
+      } catch (err) {
+        const source = "Summary & Metric Tables";
+        const message =
+          (err as Error).message || "Unexpected error fetching data";
+
+        if (err instanceof ApiError) {
+          const { status = 500 } = err;
+          setError({ message, statusCode: status, source });
+        } else {
+          setError({ message, source });
+        }
+      }
+    };
+    fetchData();
+  }, [page, rowsPerPage, debouncedSearch]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);

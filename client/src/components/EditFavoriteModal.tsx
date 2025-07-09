@@ -4,8 +4,9 @@ import React, { useEffect, useState } from "react";
 import { apiClient } from "../apis/apiClient";
 import { useAuth } from "../contexts/AuthContext";
 
-import styles from "./SummaryMetricTables.module.css";
+import styles from "./EditFavoriteModal.module.css";
 import FavoritesModal from "./FavoritesModal";
+import { StyledButton } from "../styled components/styledButton";
 
 interface EditFavoriteModalProps {
   initialData: {
@@ -19,12 +20,6 @@ interface EditFavoriteModalProps {
   handleDelete: (ticker: string) => void;
 }
 
-const RESET_STATE = {
-  ticker: "",
-  targetPurchasePriceUSD: "",
-  targetSalesPriceUSD: "",
-};
-
 export default function EditFavoriteModal({
   open,
   handleClose,
@@ -36,8 +31,6 @@ export default function EditFavoriteModal({
 
   const [form, setForm] = useState(initialData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [deleting, setDeleting] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [apiError, setApiError] = useState("");
 
   useEffect(() => {
@@ -76,7 +69,6 @@ export default function EditFavoriteModal({
       return;
     }
 
-    setSaving(true);
     try {
       const url = `${import.meta.env.VITE_BASE_URL}/favorites/${form.ticker}_${
         user?.userId
@@ -98,8 +90,6 @@ export default function EditFavoriteModal({
       handleClose(true);
     } catch (err: any) {
       setApiError(err?.message || "Submission failed.");
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -113,7 +103,6 @@ export default function EditFavoriteModal({
       return;
     }
 
-    setDeleting(true);
     try {
       const ticker = form.ticker;
       const url = `${import.meta.env.VITE_BASE_URL}/favorites/${ticker}_${
@@ -128,8 +117,6 @@ export default function EditFavoriteModal({
       handleClose(true);
     } catch (err: any) {
       setApiError(err?.message || "Submission failed.");
-    } finally {
-      setDeleting(false);
     }
   };
 
@@ -140,7 +127,7 @@ export default function EditFavoriteModal({
   return (
     <FavoritesModal open={open} handleClose={handleClose}>
       <div className={styles.container}>
-        <h2>Edit Favorite</h2>
+        <h2 className={styles.title}>Edit Favorite</h2>
 
         <form>
           <TextField
@@ -166,7 +153,7 @@ export default function EditFavoriteModal({
             margin="normal"
             type="number"
             autoFocus
-            slotProps={{ input: { inputProps: { step: 0.01, min: 0 } } }}
+            slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
           />
 
           <TextField
@@ -179,31 +166,15 @@ export default function EditFavoriteModal({
             fullWidth
             margin="normal"
             type="number"
-            slotProps={{ input: { inputProps: { step: 0.01, min: 0 } } }}
+            slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
           />
           {apiError && <h5 className={styles.errorText}>{apiError}</h5>}
           <div className={styles.btnBox}>
-            <Button onClick={onCancel}>Cancel</Button>
+            <StyledButton onClick={onCancel}>Cancel</StyledButton>
 
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              disabled={saving}
-              onClick={onSave}
-            >
-              {saving ? "Saving..." : "Save"}
-            </Button>
+            <StyledButton onClick={onSave}>Save</StyledButton>
 
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              disabled={deleting}
-              onClick={onDelete}
-            >
-              {deleting ? "Deleting..." : "Delete"}
-            </Button>
+            <StyledButton onClick={onDelete}>Delete</StyledButton>
           </div>
         </form>
       </div>

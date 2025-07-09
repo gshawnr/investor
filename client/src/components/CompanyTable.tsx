@@ -1,10 +1,13 @@
 import { TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
+
 import { apiClient } from "../apis/apiClient";
 import { companyColumns } from "../constants/tableColumns/companyTableColumns";
+import { useError } from "../contexts/ErrorContext";
+import ApiError from "../utils/ApiError";
+import CompanyModal from "./CompanyModal";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
-import CompanyModal from "./CompanyModal";
 
 import styles from "./CompanyTable.module.css";
 
@@ -15,9 +18,9 @@ export default function CompanyTable() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [companies, setCompanies] = useState([]);
-  const [error, setError] = useState({});
   const [companySelected, setCompanySelected] = useState(false);
   const [selected, setSelected] = useState(null);
+  const { setError } = useError();
 
   const SEARCH_FIELDS = "ticker,companyName,industry,sector";
 
@@ -31,26 +34,35 @@ export default function CompanyTable() {
   }, [search]);
 
   useEffect(() => {
-    try {
-      const fetchData = async () => {
+    const fetchData = async () => {
+      try {
         // page incremented to satisfy MUI and Backend structures
         const url = `${
           import.meta.env.VITE_BASE_URL
         }/profiles/paginated?pageSize=${rowsPerPage}&page=${
           page + 1
         }&search=${debouncedSearch}&fields=${SEARCH_FIELDS}`;
+
         const data: any = await apiClient(url, {});
 
         const { profiles, totalCount } = data;
         setCompanies(profiles);
         setCount(totalCount);
-      };
-      fetchData();
-    } catch (err) {
-      console.log(err);
-      setError(err as Error);
-    }
-  }, [page, rowsPerPage, debouncedSearch, error]);
+      } catch (err) {
+        const source = "Company Table";
+        const message =
+          (err as Error).message || "Unexpected error fetching data";
+
+        if (err instanceof ApiError) {
+          const { status = 500 } = err;
+          setError({ message, statusCode: status, source });
+        } else {
+          setError({ message, source });
+        }
+      }
+    };
+    fetchData();
+  }, [page, rowsPerPage, debouncedSearch]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);

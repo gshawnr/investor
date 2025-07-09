@@ -1,7 +1,10 @@
 import { TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
+
 import { apiClient } from "../apis/apiClient";
 import { targetColumns } from "../constants/tableColumns/targetTableColumns";
+import { useError } from "../contexts/ErrorContext";
+import ApiError from "../utils/ApiError";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
 
@@ -14,7 +17,7 @@ export default function TargetsTable() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [targets, setTargets] = useState([]);
-  const [error, setError] = useState({});
+  const { setError } = useError();
 
   const SEARCH_FIELDS = "ticker,ticker_year,industry";
 
@@ -28,8 +31,8 @@ export default function TargetsTable() {
   }, [search]);
 
   useEffect(() => {
-    try {
-      const fetchData = async () => {
+    const fetchData = async () => {
+      try {
         // page incremented to satisfy MUI and Backend structures
         const url = `${
           import.meta.env.VITE_BASE_URL
@@ -42,13 +45,20 @@ export default function TargetsTable() {
         const { targets, totalCount } = data;
         setTargets(targets);
         setCount(totalCount);
-      };
-      fetchData();
-    } catch (err) {
-      console.log(err);
-      setError(err as Error);
-    }
-  }, [page, rowsPerPage, debouncedSearch, error]);
+      } catch (err) {
+        const source = "Targets Table";
+        const message = "Unexpected error fetching data";
+
+        if (err instanceof ApiError) {
+          const { status = 500 } = err;
+          setError({ message, statusCode: status, source });
+        } else {
+          setError({ message, source });
+        }
+      }
+    };
+    fetchData();
+  }, [page, rowsPerPage, debouncedSearch]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);

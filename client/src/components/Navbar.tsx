@@ -10,10 +10,7 @@ const navItems = [
   { name: "Contact", path: "/contact" },
 ];
 
-const authItems = [
-  // { name: "Login", path: "/" },
-  { name: "Logout", path: "/" },
-];
+const authItems = [{ name: "Logout", path: "/" }];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);

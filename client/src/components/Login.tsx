@@ -6,22 +6,38 @@ import { useError } from "../contexts/ErrorContext";
 
 import styles from "./Login.module.css";
 import ApiError from "../utils/ApiError";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+
+const initialState = { email: "", password: "" };
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
-  const [localError, setLocalError] = useState("");
-  const { error, clearError, setError } = useError();
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { setError } = useError();
 
   const { login } = useAuth();
+
+  const validate = () => {
+    const errs: { [key: string]: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!form.email.trim()) {
+      errs.email = "Email is required.";
+    } else if (!emailRegex.test(form.email)) {
+      errs.email = "Email is not valid.";
+    }
+
+    if (!form.password.trim()) errs.password = "Password is required.";
+    return errs;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
-      setLocalError("");
-      if (!email || !password) {
-        setLocalError("Please enter both email and password.");
+      const errs = validate();
+      if (Object.keys(errs).length) {
+        setErrors(errs);
         return;
       }
 
@@ -29,12 +45,12 @@ const Login: React.FC = () => {
 
       const options = {
         method: "POST",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: form.email, password: form.password }),
       };
 
       const { token, userId }: any = await apiClient(url, options);
 
-      login({ username: email, token, userId });
+      login({ username: form.email, token, userId });
     } catch (err) {
       const message = (err as Error).message || "unknown error";
       if (err instanceof ApiError) {
@@ -46,50 +62,57 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+  };
+
   return (
     <div className={styles.background}>
       <div className={styles.loginBox}>
         <h2 className={styles.title}>Sign In</h2>
 
         <form onSubmit={handleSubmit} noValidate>
-          <label className={styles.label}>
-            Email
-            <input
-              type="email"
-              className={styles.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </label>
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
+            fullWidth
+            margin="normal"
+            required
+          />
 
-          <label className={styles.label}>
-            Password
-            <div className={styles.inputWrapper}>
-              <input
-                type={showPassword ? "text" : "password"}
-                className={styles.input}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className={styles.iconButton}
-                aria-label="Toggle password visibility"
-                tabIndex={-1}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-          </label>
-
-          <div className={styles.errorPlaceholder}>
-            <span className={styles.error}>
-              {localError ? localError : "\u00A0"}
-            </span>
-          </div>
+          <TextField
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            value={form.password}
+            onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
+            fullWidth
+            margin="normal"
+            required
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      edge="end"
+                      aria-label="toggle password visibility"
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
 
           <button type="submit" className={styles.submitButton}>
             Login

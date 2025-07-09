@@ -3,8 +3,9 @@ import React, { useState } from "react";
 
 import { apiClient } from "../apis/apiClient";
 import { useAuth } from "../contexts/AuthContext";
+import { StyledButton } from "../styled components/styledButton";
 
-import styles from "./SummaryMetricTables.module.css";
+import styles from "./AddFavoriteModal.module.css";
 import FavoritesModal from "./FavoritesModal";
 
 interface AddFavoriteModalProps {
@@ -90,7 +91,7 @@ export default function AddFavoriteModal({
   return (
     <FavoritesModal open={open} handleClose={handleClose}>
       <div className={styles.container}>
-        <h2>Add Favorite</h2>
+        <h2 className={styles.title}>Add Favorite</h2>
 
         <form onSubmit={handleSubmit}>
           <TextField
@@ -102,7 +103,6 @@ export default function AddFavoriteModal({
             helperText={errors.ticker}
             fullWidth
             margin="normal"
-            autoFocus
           />
 
           <TextField
@@ -115,7 +115,7 @@ export default function AddFavoriteModal({
             fullWidth
             margin="normal"
             type="number"
-            slotProps={{ input: { inputProps: { step: 0.01, min: 0 } } }}
+            slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
           />
 
           <TextField
@@ -128,22 +128,20 @@ export default function AddFavoriteModal({
             fullWidth
             margin="normal"
             type="number"
-            slotProps={{ input: { inputProps: { step: 0.01, min: 0 } } }}
+            slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
           />
           {apiError && <h5 className={styles.errorText}>{apiError}</h5>}
           <div className={styles.btnBox}>
-            <Button onClick={() => handleClose(true)} disabled={submitting}>
-              Cancel
-            </Button>
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={submitting}
+            <StyledButton
+              onClick={() => handleClose(true)}
+              className="shadow-md"
             >
-              {submitting ? "Submitting..." : "Submit"}
-            </Button>
+              Cancel
+            </StyledButton>
+
+            <StyledButton type="submit" className="shadow-md">
+              Submit
+            </StyledButton>
           </div>
         </form>
       </div>

@@ -1,13 +1,16 @@
-import { TablePagination } from "@mui/material";
+import { Button, TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
+
 import { apiClient } from "../apis/apiClient";
 import { favoriteColumns } from "../constants/tableColumns/favoriteTableColumns";
-import SearchBar from "./SearchBar";
-import { TableDisplay } from "./TableDisplay";
-import { Button } from "@mui/material";
+import { useAuth } from "../contexts/AuthContext";
+import { useError } from "../contexts/ErrorContext";
+import ApiError from "../utils/ApiError";
 import AddFavoritesModal from "./AddFavoriteModal";
 import EditFavoritesModal from "./EditFavoriteModal";
-import { useAuth } from "../contexts/AuthContext";
+import SearchBar from "./SearchBar";
+import { TableDisplay } from "./TableDisplay";
+import { StyledButton } from "../styled components/styledButton";
 
 import styles from "./FavoritesTable.module.css";
 
@@ -22,7 +25,7 @@ export default function FavoritesTable() {
   const [selectedFavorite, setSelectedFavorite] = useState<any>({});
   const [openAddFavoritesModal, setAddFavoritesModal] = useState(false);
   const [openEditFavoritesModal, setEditFavoritesModal] = useState(false);
-  const [error, setError] = useState({});
+  const { setError } = useError();
 
   const SEARCH_FIELDS = "ticker,industry,sector";
 
@@ -36,10 +39,13 @@ export default function FavoritesTable() {
   }, [search]);
 
   useEffect(() => {
-    try {
-      const userId = user?.userId || "";
+    const userId = user?.userId || "";
 
-      const fetchData = async () => {
+    const fetchData = async () => {
+      try {
+        // favorites belong to a specific user
+        if (!userId) return;
+
         // page incremented to satisfy MUI and Backend structures
         const url = `${
           import.meta.env.VITE_BASE_URL
@@ -54,13 +60,22 @@ export default function FavoritesTable() {
 
         setFavorites(formattedFavorites);
         setCount(totalCount);
-      };
-      fetchData();
-    } catch (err) {
-      console.log(err);
-      setError(err as Error);
-    }
-  }, [page, rowsPerPage, debouncedSearch, error]);
+      } catch (err) {
+        const source = "Favorites Table";
+        const message =
+          (err as Error).message || "Unexpected error fetching data";
+
+        if (err instanceof ApiError) {
+          const { status = 500 } = err;
+          setError({ message, statusCode: status, source });
+        } else {
+          setError({ message, source });
+        }
+      }
+    };
+
+    fetchData();
+  }, [page, rowsPerPage, debouncedSearch]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -106,60 +121,56 @@ export default function FavoritesTable() {
       prev.filter((fav: any) => fav.ticker !== ticker)
     );
 
-    const handleSelectFavorite = (favorite: any) => {
-      setEditFavoritesModal(true);
-      setSelectedFavorite(favorite);
-    };
+    // const handleSelectFavorite = (favorite: any) => {
+    //   setEditFavoritesModal(true);
+    //   setSelectedFavorite(favorite);
+    // };
 
-    return (
-      <div className={styles.container}>
-        <AddFavoritesModal
-          open={openAddFavoritesModal}
-          handleClose={() => setAddFavoritesModal(false)}
-          handleAdd={handleAddFavorites}
-        />
+    // return (
+    //   <div className={styles.container}>
+    //     <AddFavoritesModal
+    //       open={openAddFavoritesModal}
+    //       handleClose={() => setAddFavoritesModal(false)}
+    //       handleAdd={handleAddFavorites}
+    //     />
 
-        <EditFavoritesModal
-          initialData={selectedFavorite}
-          open={openEditFavoritesModal}
-          handleClose={() => setEditFavoritesModal(false)}
-          handleEdit={handleEditFavorites}
-          handleDelete={handleDeleteFavorite}
-        />
-        <div className={styles.tableAndSearchContainer}>
-          <div className={styles.searchContainer}>
-            <SearchBar onSearch={validateAndSetSearch} />
-          </div>
+    //     <EditFavoritesModal
+    //       initialData={selectedFavorite}
+    //       open={openEditFavoritesModal}
+    //       handleClose={() => setEditFavoritesModal(false)}
+    //       handleEdit={handleEditFavorites}
+    //       handleDelete={handleDeleteFavorite}
+    //     />
+    //     <div className={styles.tableAndSearchContainer}>
+    //       <div className={styles.searchContainer}>
+    //         <SearchBar onSearch={validateAndSetSearch} />
+    //       </div>
 
-          <div className={styles.tableContainer}>
-            <TableDisplay
-              data={favorites}
-              columns={favoriteColumns}
-              handleSelect={handleSelectFavorite}
-            />
-          </div>
+    //       <div className={styles.tableContainer}>
+    //         <TableDisplay
+    //           data={favorites}
+    //           columns={favoriteColumns}
+    //           handleSelect={handleSelectFavorite}
+    //         />
+    //       </div>
 
-          <TablePagination
-            component="div"
-            count={count}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </div>
+    //       <TablePagination
+    //         component="div"
+    //         count={count}
+    //         page={page}
+    //         onPageChange={handleChangePage}
+    //         rowsPerPage={rowsPerPage}
+    //         onRowsPerPageChange={handleChangeRowsPerPage}
+    //       />
+    //     </div>
 
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setAddFavoritesModal(true)}
-          >
-            Add Favorite
-          </Button>
-        </div>
-      </div>
-    );
+    //     <div>
+    //       <StyledButton onClick={() => setAddFavoritesModal(true)}>
+    //         Add Favorite
+    //       </StyledButton>
+    //     </div>
+    //   </div>
+    // );
   };
 
   const handleSelectFavorite = (favorite: any) => {
@@ -215,13 +226,9 @@ export default function FavoritesTable() {
       </div>
 
       <div>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setAddFavoritesModal(true)}
-        >
+        <StyledButton onClick={() => setAddFavoritesModal(true)}>
           Add Favorite
-        </Button>
+        </StyledButton>
       </div>
     </div>
   );

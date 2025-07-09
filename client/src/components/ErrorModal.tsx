@@ -32,6 +32,17 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ error }) => {
     <Modal open={open} handleClose={handleClose}>
       <div className={styles.container}>
         <p className={styles.title}>{error.message}</p>
+        {error?.statusCode && (
+          <p className={styles.info}>Status: {error.statusCode}</p>
+        )}
+        {error?.source && (
+          <p className={styles.info}>Error Source: {error.source}</p>
+        )}
+        <div className={styles.actions}>
+          <button className={styles.button} onClick={handleClose}>
+            Close
+          </button>
+        </div>
       </div>
     </Modal>
   );

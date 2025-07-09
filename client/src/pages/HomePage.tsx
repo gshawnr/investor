@@ -10,7 +10,7 @@ import ErrorModal from "../components/ErrorModal";
 
 function HomePage() {
   const { isAuthenticated } = useAuth();
-  const { error, clearError } = useError();
+  const { error } = useError();
   return (
     <div className={styles.container}>
       <ErrorModal error={error} />
