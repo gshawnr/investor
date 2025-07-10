@@ -80,7 +80,7 @@ const Login: React.FC = () => {
             value={form.email}
             onChange={handleChange}
             error={!!errors.email}
-            helperText={errors.email}
+            helperText={errors.email || " "}
             fullWidth
             margin="normal"
             required
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
             value={form.password}
             onChange={handleChange}
             error={!!errors.password}
-            helperText={errors.password}
+            helperText={errors.password || " "}
             fullWidth
             margin="normal"
             required

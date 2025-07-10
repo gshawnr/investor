@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 
 import { apiClient } from "../apis/apiClient";
 import { useAuth } from "../contexts/AuthContext";
+import { useError } from "../contexts/ErrorContext";
+import ApiError from "../utils/ApiError";
 
 import styles from "./EditFavoriteModal.module.css";
 import FavoritesModal from "./FavoritesModal";
-import { StyledButton } from "../styled components/styledButton";
+import { StyledButton } from "../styled_components/StyledButton";
 
 interface EditFavoriteModalProps {
   initialData: {
@@ -30,13 +32,12 @@ export default function EditFavoriteModal({
   const { user } = useAuth();
 
   const [form, setForm] = useState(initialData);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [apiError, setApiError] = useState("");
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const { setError } = useError();
 
   useEffect(() => {
     setForm(initialData);
-    setErrors({});
-    setApiError("");
+    setFormErrors({});
   }, [initialData, open]);
 
   const validate = () => {
@@ -56,16 +57,15 @@ export default function EditFavoriteModal({
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    setFormErrors({ ...formErrors, [e.target.name]: "" });
   };
 
   const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setApiError("");
 
     const errs = validate();
     if (Object.keys(errs).length) {
-      setErrors(errs);
+      setFormErrors(errs);
       return;
     }
 
@@ -87,19 +87,25 @@ export default function EditFavoriteModal({
       });
 
       handleEdit([data]);
-      handleClose(true);
+      onClose();
     } catch (err: any) {
-      setApiError(err?.message || "Submission failed.");
+      const message = (err as Error).message || "unknown error";
+      const source = "Add Favorite Modal";
+      if (err instanceof ApiError) {
+        const { status = 500 } = err;
+        setError({ message, statusCode: status, source });
+      } else {
+        setError({ message, source });
+      }
     }
   };
 
   const onDelete = async (e: React.FormEvent) => {
     e.preventDefault();
-    setApiError("");
 
     const errs = validate();
     if (Object.keys(errs).length) {
-      setErrors(errs);
+      setFormErrors(errs);
       return;
     }
 
@@ -114,18 +120,26 @@ export default function EditFavoriteModal({
       });
 
       handleDelete(ticker);
-      handleClose(true);
+      onClose();
     } catch (err: any) {
-      setApiError(err?.message || "Submission failed.");
+      const message = (err as Error).message || "unknown error";
+      const source = "Add Favorite Modal";
+      if (err instanceof ApiError) {
+        const { status = 500 } = err;
+        setError({ message, statusCode: status, source });
+      } else {
+        setError({ message, source });
+      }
     }
   };
 
-  const onCancel = () => {
+  const onClose = () => {
+    setFormErrors({});
     handleClose(true);
   };
 
   return (
-    <FavoritesModal open={open} handleClose={handleClose}>
+    <FavoritesModal open={open} handleClose={onClose}>
       <div className={styles.container}>
         <h2 className={styles.title}>Edit Favorite</h2>
 
@@ -135,8 +149,8 @@ export default function EditFavoriteModal({
             name="ticker"
             value={form.ticker}
             onChange={onChange}
-            error={!!errors.ticker}
-            helperText={errors.ticker}
+            error={!!formErrors.ticker}
+            helperText={formErrors.ticker || " "}
             fullWidth
             margin="normal"
             disabled
@@ -147,8 +161,8 @@ export default function EditFavoriteModal({
             name="targetPurchasePriceUSD"
             value={form.targetPurchasePriceUSD}
             onChange={onChange}
-            error={!!errors.targetPurchasePriceUSD}
-            helperText={errors.targetPurchasePriceUSD}
+            error={!!formErrors.targetPurchasePriceUSD}
+            helperText={formErrors.targetPurchasePriceUSD || " "}
             fullWidth
             margin="normal"
             type="number"
@@ -161,16 +175,15 @@ export default function EditFavoriteModal({
             name="targetSalesPriceUSD"
             value={form.targetSalesPriceUSD}
             onChange={onChange}
-            error={!!errors.targetSalesPriceUSD}
-            helperText={errors.targetSalesPriceUSD}
+            error={!!formErrors.targetSalesPriceUSD}
+            helperText={formErrors.targetSalesPriceUSD || " "}
             fullWidth
             margin="normal"
             type="number"
             slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
           />
-          {apiError && <h5 className={styles.errorText}>{apiError}</h5>}
           <div className={styles.btnBox}>
-            <StyledButton onClick={onCancel}>Cancel</StyledButton>
+            <StyledButton onClick={onClose}>Cancel</StyledButton>
 
             <StyledButton onClick={onSave}>Save</StyledButton>
 

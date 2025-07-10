@@ -2,8 +2,10 @@ import { Button, TextField } from "@mui/material";
 import React, { useState } from "react";
 
 import { apiClient } from "../apis/apiClient";
+import ApiError from "../utils/ApiError";
+import { useError } from "../contexts/ErrorContext";
 import { useAuth } from "../contexts/AuthContext";
-import { StyledButton } from "../styled components/styledButton";
+import { StyledButton } from "../styled_components/StyledButton";
 
 import styles from "./AddFavoriteModal.module.css";
 import FavoritesModal from "./FavoritesModal";
@@ -22,16 +24,14 @@ const initialState = {
 
 export default function AddFavoriteModal({
   open,
-  // handleOpen,
   handleClose,
   handleAdd,
 }: AddFavoriteModalProps) {
   const { user } = useAuth();
 
   const [form, setForm] = useState(initialState);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [submitting, setSubmitting] = useState(false);
-  const [apiError, setApiError] = useState("");
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const { setError } = useError();
 
   const validate = () => {
     const errs: { [key: string]: string } = {};
@@ -50,20 +50,18 @@ export default function AddFavoriteModal({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    setFormErrors({ ...formErrors, [e.target.name]: "" });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setApiError("");
 
     const errs = validate();
     if (Object.keys(errs).length) {
-      setErrors(errs);
+      setFormErrors(errs);
       return;
     }
 
-    setSubmitting(true);
     try {
       const url = `${import.meta.env.VITE_BASE_URL}/favorites`;
 
@@ -79,17 +77,26 @@ export default function AddFavoriteModal({
 
       setForm(initialState);
       handleAdd([data]);
-      // handleOpen(false);
       handleClose(true);
     } catch (err: any) {
-      setApiError(err?.message || "Submission failed.");
-    } finally {
-      setSubmitting(false);
+      const message = (err as Error).message || "unknown error";
+      const source = "Add Favorite Modal";
+      if (err instanceof ApiError) {
+        const { status = 500 } = err;
+        setError({ message, statusCode: status, source });
+      } else {
+        setError({ message, source });
+      }
     }
   };
 
+  const onModalClose = () => {
+    setFormErrors({});
+    handleClose(true);
+  };
+
   return (
-    <FavoritesModal open={open} handleClose={handleClose}>
+    <FavoritesModal open={open} handleClose={onModalClose}>
       <div className={styles.container}>
         <h2 className={styles.title}>Add Favorite</h2>
 
@@ -99,8 +106,8 @@ export default function AddFavoriteModal({
             name="ticker"
             value={form.ticker}
             onChange={handleChange}
-            error={!!errors.ticker}
-            helperText={errors.ticker}
+            error={!!formErrors.ticker}
+            helperText={formErrors.ticker || " "}
             fullWidth
             margin="normal"
           />
@@ -110,8 +117,8 @@ export default function AddFavoriteModal({
             name="targetPurchasePriceUSD"
             value={form.targetPurchasePriceUSD}
             onChange={handleChange}
-            error={!!errors.targetPurchasePriceUSD}
-            helperText={errors.targetPurchasePriceUSD}
+            error={!!formErrors.targetPurchasePriceUSD}
+            helperText={formErrors.targetPurchasePriceUSD || " "}
             fullWidth
             margin="normal"
             type="number"
@@ -123,19 +130,16 @@ export default function AddFavoriteModal({
             name="targetSalesPriceUSD"
             value={form.targetSalesPriceUSD}
             onChange={handleChange}
-            error={!!errors.targetSalesPriceUSD}
-            helperText={errors.targetSalesPriceUSD}
+            error={!!formErrors.targetSalesPriceUSD}
+            helperText={formErrors.targetSalesPriceUSD || " "}
             fullWidth
             margin="normal"
             type="number"
             slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
           />
-          {apiError && <h5 className={styles.errorText}>{apiError}</h5>}
+
           <div className={styles.btnBox}>
-            <StyledButton
-              onClick={() => handleClose(true)}
-              className="shadow-md"
-            >
+            <StyledButton onClick={() => onModalClose()} className="shadow-md">
               Cancel
             </StyledButton>
 

@@ -10,7 +10,7 @@ import AddFavoritesModal from "./AddFavoriteModal";
 import EditFavoritesModal from "./EditFavoriteModal";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
-import { StyledButton } from "../styled components/styledButton";
+import { StyledButton } from "../styled_components/StyledButton";
 
 import styles from "./FavoritesTable.module.css";
 
@@ -24,7 +24,7 @@ export default function FavoritesTable() {
   const [favorites, setFavorites] = useState<any>([]);
   const [selectedFavorite, setSelectedFavorite] = useState<any>({});
   const [openAddFavoritesModal, setAddFavoritesModal] = useState(false);
-  const [openEditFavoritesModal, setEditFavoritesModal] = useState(false);
+  const [openEditFavoritesModal, setOpenEditFavoritesModal] = useState(false);
   const { setError } = useError();
 
   const SEARCH_FIELDS = "ticker,industry,sector";
@@ -120,61 +120,10 @@ export default function FavoritesTable() {
     setFavorites((prev: any) =>
       prev.filter((fav: any) => fav.ticker !== ticker)
     );
-
-    // const handleSelectFavorite = (favorite: any) => {
-    //   setEditFavoritesModal(true);
-    //   setSelectedFavorite(favorite);
-    // };
-
-    // return (
-    //   <div className={styles.container}>
-    //     <AddFavoritesModal
-    //       open={openAddFavoritesModal}
-    //       handleClose={() => setAddFavoritesModal(false)}
-    //       handleAdd={handleAddFavorites}
-    //     />
-
-    //     <EditFavoritesModal
-    //       initialData={selectedFavorite}
-    //       open={openEditFavoritesModal}
-    //       handleClose={() => setEditFavoritesModal(false)}
-    //       handleEdit={handleEditFavorites}
-    //       handleDelete={handleDeleteFavorite}
-    //     />
-    //     <div className={styles.tableAndSearchContainer}>
-    //       <div className={styles.searchContainer}>
-    //         <SearchBar onSearch={validateAndSetSearch} />
-    //       </div>
-
-    //       <div className={styles.tableContainer}>
-    //         <TableDisplay
-    //           data={favorites}
-    //           columns={favoriteColumns}
-    //           handleSelect={handleSelectFavorite}
-    //         />
-    //       </div>
-
-    //       <TablePagination
-    //         component="div"
-    //         count={count}
-    //         page={page}
-    //         onPageChange={handleChangePage}
-    //         rowsPerPage={rowsPerPage}
-    //         onRowsPerPageChange={handleChangeRowsPerPage}
-    //       />
-    //     </div>
-
-    //     <div>
-    //       <StyledButton onClick={() => setAddFavoritesModal(true)}>
-    //         Add Favorite
-    //       </StyledButton>
-    //     </div>
-    //   </div>
-    // );
   };
 
   const handleSelectFavorite = (favorite: any) => {
-    setEditFavoritesModal(true);
+    setOpenEditFavoritesModal(true);
     setSelectedFavorite(favorite);
   };
 
@@ -198,7 +147,7 @@ export default function FavoritesTable() {
       <EditFavoritesModal
         initialData={selectedFavorite}
         open={openEditFavoritesModal}
-        handleClose={() => setEditFavoritesModal(false)}
+        handleClose={(openState) => setOpenEditFavoritesModal(!openState)}
         handleEdit={handleEditFavorites}
         handleDelete={handleDeleteFavorite}
       />
