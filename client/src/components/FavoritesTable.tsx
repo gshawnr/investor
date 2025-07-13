@@ -1,5 +1,5 @@
-import { Button, TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import Pagination from "./Pagination";
 
 import { apiClient } from "../apis/apiClient";
 import { favoriteColumns } from "../constants/tableColumns/favoriteTableColumns";
@@ -164,7 +164,7 @@ export default function FavoritesTable() {
           />
         </div>
 
-        <TablePagination
+        <Pagination
           component="div"
           count={count}
           page={page}

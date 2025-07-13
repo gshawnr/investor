@@ -1,6 +1,6 @@
-import { TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
+import Pagination from "./Pagination";
 import { apiClient } from "../apis/apiClient";
 import { targetColumns } from "../constants/tableColumns/targetTableColumns";
 import { useError } from "../contexts/ErrorContext";
@@ -95,7 +95,7 @@ export default function TargetsTable() {
           <TableDisplay data={targets} columns={targetColumns} />
         </div>
 
-        <TablePagination
+        <Pagination
           component="div"
           count={count}
           page={page}

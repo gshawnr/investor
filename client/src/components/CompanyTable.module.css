@@ -11,17 +11,19 @@
 .tableAndSearchContainer {
   display: flex;
   flex-direction: column;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
+  margin-top: 20px;
 }
 .searchContainer {
   display: flex;
   justify-content: right;
   padding-bottom: 10px;
-  height: 65px;
+  height: 55px;
 }
 
 .tableContainer {
   overflow: auto;
-  height: 90%;
+  height: 88%;
 }

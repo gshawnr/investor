@@ -1,7 +1,7 @@
 .container {
   display: flex;
   justify-content: flex-end;
-  padding: 5px 0;
+  height: 45px;
 }
 
 .searchBar {

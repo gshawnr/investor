@@ -26,11 +26,11 @@ function TargetsPage() {
     <div className={styles.container}>
       <ErrorModal error={error} />
       <div className={styles.tableContainer}>
-        <div>
+        <div className={styles.top}>
           <TargetsTable />
         </div>
 
-        <div>
+        <div className={styles.bottom}>
           <FavoritesTable />
         </div>
       </div>

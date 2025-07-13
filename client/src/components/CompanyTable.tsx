@@ -1,5 +1,5 @@
-import { TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import Pagination from "./Pagination";
 
 import { apiClient } from "../apis/apiClient";
 import { companyColumns } from "../constants/tableColumns/companyTableColumns";
@@ -119,7 +119,7 @@ export default function CompanyTable() {
           />
         </div>
 
-        <TablePagination
+        <Pagination
           component="div"
           count={count}
           page={page}

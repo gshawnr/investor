@@ -1,4 +1,3 @@
-import { TablePagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 import { apiClient } from "../apis/apiClient";
@@ -8,6 +7,7 @@ import {
 } from "../constants/tableColumns/summaryMetricTableColumns";
 import { useError } from "../contexts/ErrorContext";
 import ApiError from "../utils/ApiError";
+import Pagination from "./Pagination";
 import SearchBar from "./SearchBar";
 import { TableDisplay } from "./TableDisplay";
 
@@ -107,7 +107,7 @@ export default function SummaryMetricTables() {
           </div>
         </div>
 
-        <TablePagination
+        <Pagination
           component="div"
           count={count}
           page={page}
