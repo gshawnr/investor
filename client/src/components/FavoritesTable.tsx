@@ -75,7 +75,7 @@ export default function FavoritesTable() {
     };
 
     fetchData();
-  }, [page, rowsPerPage, debouncedSearch]);
+  }, [page, rowsPerPage, debouncedSearch, favorites]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);

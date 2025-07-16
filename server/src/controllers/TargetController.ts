@@ -25,8 +25,14 @@ export const getTargets = async (
     const { pagination } = req as RequestWithPagination<ITarget>;
     const { filter, options } = pagination || {};
 
-    const targets = await TargetService.getTargets({ filter, options });
-    res.status(200).json(targets);
+    // const targets = await TargetService.getTargets({ filter, options });
+
+    const [targets, totalCount] = await Promise.all([
+      TargetService.getTargets(filter, options),
+      TargetService.getTargetsCount(filter),
+    ]);
+
+    res.status(200).json({ targets, totalCount });
   } catch (err) {
     next(err);
   }

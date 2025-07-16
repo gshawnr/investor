@@ -10,11 +10,6 @@ class ProfileService {
       throw new Error("Ticker is required to create a profile.");
     }
 
-    // const existing = await Profile.findOne({ ticker: ticker.toLowerCase() });
-    // if (existing) {
-    //   throw new Error(`Profile for ticker "${ticker}" already exists.`);
-    // }
-
     const filter = { ticker: ticker.toLowerCase() };
     const update = {
       ticker: ticker.toLowerCase(),
@@ -30,17 +25,6 @@ class ProfileService {
 
     const profile = await Profile.findOneAndUpdate(filter, update, options);
     return profile;
-    // const profile = new Profile({
-    //   ticker,
-    //   companyName,
-    //   exchange,
-    //   beta,
-    //   industry,
-    //   sector,
-    //   raw,
-    // });
-
-    // return profile.save();
   }
 
   async getProfiles(filter = {}, options = {}) {
