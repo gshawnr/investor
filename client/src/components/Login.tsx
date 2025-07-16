@@ -84,6 +84,7 @@ const Login: React.FC = () => {
             fullWidth
             margin="normal"
             required
+            autoComplete="email"
           />
 
           <TextField
@@ -97,6 +98,7 @@ const Login: React.FC = () => {
             fullWidth
             margin="normal"
             required
+            autoComplete="new-password"
             slotProps={{
               input: {
                 endAdornment: (

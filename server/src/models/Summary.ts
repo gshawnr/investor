@@ -6,6 +6,7 @@ const summarySchema: Schema = new Schema(
     ticker: { type: String, required: true, lowercase: true },
     fiscalYear: { type: String, required: true, match: /^\d{4}-\d{2}-\d{2}$/ }, // Validates the 'yyyy-mm-dd' format
     ticker_year: { type: String, required: true, unique: true },
+    fiscalYearEnd: { type: String, default: "NA" },
     beta: { type: Number, required: true },
     industry: { type: String, required: true },
     sector: { type: String, required: true },

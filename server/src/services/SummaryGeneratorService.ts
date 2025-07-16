@@ -117,6 +117,7 @@ class SummaryGeneratorService {
         ticker: profile.ticker,
         fiscalYear: balance.fiscalYear,
         ticker_year: balance.ticker_year,
+        fiscalYearEnd: balanceRaw.date,
         beta: profile.beta,
         industry: profile.industry,
         sector: profile.sector,

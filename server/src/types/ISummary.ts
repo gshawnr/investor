@@ -4,6 +4,7 @@ export interface ISummary extends Document {
   ticker: string;
   fiscalYear: string; // Format: 'yyyy-mm-dd'
   ticker_year: string; // Concatenation of ticker symbol and fiscal year
+  fiscalyearEnd: string; // Date when the fiscal year ends
   beta: number;
   industry: string;
   sector: string;

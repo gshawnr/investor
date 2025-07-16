@@ -3,6 +3,7 @@ import { IColumn } from "../../types/tableTypes";
 export const summaryColumns: IColumn[] = [
   { field: "ticker", label: "Ticker" },
   { field: "ticker_year", label: "Ticker_Year" },
+  { field: "fiscalYearEnd", label: "FYE" },
   { field: "fiscalYear", label: "Year" },
   { field: "industry", label: "Industry" },
   { field: "sector", label: "Sector" },
