@@ -14,7 +14,9 @@ interface EditFavoriteModalProps {
   initialData: {
     ticker: string;
     targetPurchasePriceUSD: number | string;
+    targetPurchaseDate: string;
     targetSalesPriceUSD: number | string;
+    targetSellDate: string;
   };
   open: boolean;
   handleClose: (close: boolean) => void;
@@ -81,7 +83,9 @@ export default function EditFavoriteModal({
           targetPurchasePriceUSD: parseFloat(
             form.targetPurchasePriceUSD as string
           ),
+          targetPurchaseDate: form.targetPurchaseDate,
           targetSalesPriceUSD: parseFloat(form.targetSalesPriceUSD as string),
+          targetSellDate: form.targetSellDate,
           userId: user?.userId,
         }),
       });
@@ -171,6 +175,17 @@ export default function EditFavoriteModal({
           />
 
           <TextField
+            label="Target Purchase Date"
+            name="targetPurchaseDate"
+            value={form.targetPurchaseDate}
+            onChange={onChange}
+            error={!!formErrors.targetPurchaseDate}
+            helperText={formErrors.targetPurchaseDate || " "}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
             label="Target Sales Price (USD)"
             name="targetSalesPriceUSD"
             value={form.targetSalesPriceUSD}
@@ -181,6 +196,17 @@ export default function EditFavoriteModal({
             margin="normal"
             type="number"
             slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
+          />
+
+          <TextField
+            label="Target Sell Date"
+            name="targetSellDate"
+            value={form.targetSellDate}
+            onChange={onChange}
+            error={!!formErrors.targetSellDate}
+            helperText={formErrors.targetSellDate || " "}
+            fullWidth
+            margin="normal"
           />
           <div className={styles.btnBox}>
             <StyledButton onClick={onClose}>Cancel</StyledButton>

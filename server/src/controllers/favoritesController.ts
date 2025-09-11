@@ -13,8 +13,14 @@ export const createFavorites = async (
   next: NextFunction
 ) => {
   try {
-    const { ticker, targetPurchasePriceUSD, targetSalesPriceUSD, userId } =
-      req.body;
+    const {
+      ticker,
+      targetPurchasePriceUSD,
+      targetSalesPriceUSD,
+      userId,
+      targetPurchaseDate,
+      targetSellDate,
+    } = req.body;
 
     if (!ticker || !targetPurchasePriceUSD || !targetSalesPriceUSD || !userId) {
       res.status(400).json({ message: "All fields are required" });
@@ -37,7 +43,9 @@ export const createFavorites = async (
       industry,
       sector,
       targetPurchasePriceUSD,
+      targetPurchaseDate,
       targetSalesPriceUSD,
+      targetSellDate,
       userId,
     };
 
@@ -78,8 +86,14 @@ export const updateFavorites = async (
   next: NextFunction
 ) => {
   try {
-    const { industry, sector, targetPurchasePriceUSD, targetSalesPriceUSD } =
-      req.body;
+    const {
+      industry,
+      sector,
+      targetPurchasePriceUSD,
+      targetSalesPriceUSD,
+      targetPurchaseDate,
+      targetSellDate,
+    } = req.body;
 
     const { ticker_user } = req.params;
 
@@ -88,7 +102,9 @@ export const updateFavorites = async (
     if (sector) update.sector = sector;
     if (targetPurchasePriceUSD)
       update.targetPurchasePriceUSD = targetPurchasePriceUSD;
+    if (targetPurchaseDate) update.targetPurchaseDate = targetPurchaseDate;
     if (targetSalesPriceUSD) update.targetSalesPriceUSD = targetSalesPriceUSD;
+    if (targetSellDate) update.targetSellDate = targetSellDate;
 
     if (Object.keys(update).length === 0) {
       res.status(400).json({ message: "No fields to update" });

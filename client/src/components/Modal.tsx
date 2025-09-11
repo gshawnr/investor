@@ -8,16 +8,14 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ open, handleClose, children }) => {
   return (
-    <div>
-      <MuiModal
-        open={open}
-        onClose={() => handleClose(true)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <div>{children}</div>
-      </MuiModal>
-    </div>
+    <MuiModal
+      open={open}
+      onClose={() => handleClose(true)}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <div>{children}</div>
+    </MuiModal>
   );
 };
 

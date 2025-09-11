@@ -19,7 +19,9 @@ interface AddFavoriteModalProps {
 const initialState = {
   ticker: "",
   targetPurchasePriceUSD: "",
+  targetPurchaseDate: "",
   targetSalesPriceUSD: "",
+  targetSellDate: "",
 };
 
 export default function AddFavoriteModal({
@@ -70,7 +72,9 @@ export default function AddFavoriteModal({
         body: JSON.stringify({
           ticker: form.ticker.trim(),
           targetPurchasePriceUSD: parseFloat(form.targetPurchasePriceUSD),
+          targetPurchaseDate: form.targetPurchaseDate,
           targetSalesPriceUSD: parseFloat(form.targetSalesPriceUSD),
+          targetSellDate: form.targetSellDate,
           userId: user?.userId,
         }),
       });
@@ -100,7 +104,7 @@ export default function AddFavoriteModal({
       <div className={styles.container}>
         <h2 className={styles.title}>Add Favorite</h2>
 
-        <form onSubmit={handleSubmit}>
+        <form>
           <TextField
             label="Ticker"
             name="ticker"
@@ -126,6 +130,17 @@ export default function AddFavoriteModal({
           />
 
           <TextField
+            label="Target Purchase Date (YYYY-MM-DD)"
+            name="targetPurchaseDate"
+            value={form.targetPurchaseDate}
+            onChange={handleChange}
+            error={!!formErrors.targetPurchaseDate}
+            helperText={formErrors.targetPurchaseDate || " "}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
             label="Target Sales Price (USD)"
             name="targetSalesPriceUSD"
             value={form.targetSalesPriceUSD}
@@ -138,12 +153,23 @@ export default function AddFavoriteModal({
             slotProps={{ input: { inputProps: { step: 1, min: 0 } } }}
           />
 
+          <TextField
+            label="Target Sell Date (YYYY-MM-DD)"
+            name="targetSellDate"
+            value={form.targetSellDate}
+            onChange={handleChange}
+            error={!!formErrors.targetSellDate}
+            helperText={formErrors.targetSellDate || " "}
+            fullWidth
+            margin="normal"
+          />
+
           <div className={styles.btnBox}>
             <StyledButton onClick={() => onModalClose()} className="shadow-md">
               Cancel
             </StyledButton>
 
-            <StyledButton type="submit" className="shadow-md">
+            <StyledButton onClick={handleSubmit} className="shadow-md">
               Submit
             </StyledButton>
           </div>

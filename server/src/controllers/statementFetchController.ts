@@ -267,7 +267,7 @@ const updateAllPrices = async (
       const delay = (ms: number) =>
         new Promise((resolve) => setTimeout(resolve, ms));
 
-      const BATCH_SIZE = 35;
+      const BATCH_SIZE = 50; // previously worked at 35
       for (let i = 0; i < tickerArr.length; i += BATCH_SIZE) {
         const batch = tickerArr.slice(i, i + BATCH_SIZE);
 

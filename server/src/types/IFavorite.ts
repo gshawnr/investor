@@ -18,6 +18,8 @@ export type CreateFavoriteInputType = {
   industry: string;
   sector: string;
   targetPurchasePriceUSD: number;
+  targetPurchaseDate: string;
   targetSalesPriceUSD: number;
+  targetSellDate: string;
   userId: Types.ObjectId;
 };

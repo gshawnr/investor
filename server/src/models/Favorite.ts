@@ -8,7 +8,9 @@ const favoriteSchema = new Schema(
     industry: { type: String, required: true },
     sector: { type: String, required: true },
     targetPurchasePriceUSD: { type: Number, require: true },
+    targetPurchaseDate: { type: String, default: "" },
     targetSalesPriceUSD: { type: Number, require: true },
+    targetSellDate: { type: String, default: "" },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
